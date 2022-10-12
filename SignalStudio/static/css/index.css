@@ -1,0 +1,47 @@
+
+*{
+  margin: 0;
+  padding: 0;
+  font-family: "Century Gothic", Arial, sans-serif;
+}
+
+/* header (button + title) */
+.container {
+  width: 100%;
+  min-height: 100vh;
+  padding-right: 5%;
+  padding-left: 5%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.opt-bar {
+  padding: 2% 5% 0;
+  min-width: 80%;
+  height:10%;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+ul{
+    list-style: none;
+}
+li {
+  display: inline-block;
+}
+.title{
+  min-width: 20%;
+  font-size: 1.5rem;
+  display: block;
+  padding-top: 2%;
+  text-align: center;
+  margin-bottom: -5%
+}
+
+.add-signal-btn, .save-signal-btn {
+  padding: 0.9em;
+  margin:0.5em;
+  min-width: 100px;
+  color: black;
+  cursor: pointer;
+  border-radius: 5px;
+}
