@@ -6,42 +6,106 @@
 }
 
 /* header (button + title) */
-.container {
-  width: 100%;
-  min-height: 100vh;
-  padding-right: 5%;
-  padding-left: 5%;
-  box-sizing: border-box;
-  overflow: hidden;
-}
-.opt-bar {
-  padding: 2% 5% 0;
-  min-width: 80%;
-  height:10%;
+  .container {
+    width: 100%;
+    min-height: 100vh;
+    padding-right: 5%;
+    padding-left: 5%;
+    box-sizing: border-box;
+    overflow: hidden;
+    padding-bottom: 2%;
+  }
+  .opt-bar {
+    padding: 2% 5% 0;
+    min-width: 80%;
+    height:10%;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+  }
+  ul{
+      list-style: none;
+  }
+  li {
+    display: inline-block;
+  }
+  .title{
+    min-width: 20%;
+    font-size: 1.5rem;
+    display: block;
+    padding-top: 2%;
+    text-align: center;
+    margin-bottom: -3%
+  }
+  .leftheader{
+    min-width: 20%;
+    font-size: 1.5rem;
+    display: block;
+    padding-top: 2%;
+    text-align: left;
+  }
+  .rightheader{
+    min-width: 20%;
+    font-size: 1.5rem;
+    display: block;
+    padding-top: 2%;
+    text-align: right;
+  }
+  .add-signal-btn, .save-signal-btn {
+    padding: 0.9em;
+    margin:0.5em;
+    min-width: 100px;
+    color: black;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+
+/* signal frams styling */
+.signalframe {
+  max-width: 100%;
+  min-width: 60%;
   display: flex;
-  align-items: center;
-  box-sizing: border-box;
+  justify-content: center;
 }
-ul{
-    list-style: none;
-}
-li {
-  display: inline-block;
-}
-.title{
-  min-width: 20%;
-  font-size: 1.5rem;
-  display: block;
-  padding-top: 2%;
-  text-align: center;
-  margin-bottom: -5%
+#myPlot {
+  max-width: 80%;
+  min-width: 80%;
 }
 
-.add-signal-btn, .save-signal-btn {
-  padding: 0.9em;
-  margin:0.5em;
-  min-width: 100px;
-  color: black;
+/* Slider styling */
+.slidecontainer {
+  width: 100%;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 30%;
+  height: 25px;
+  border-radius: 35px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: #04AA6D;
   cursor: pointer;
-  border-radius: 5px;
+}
+
+.slider::-moz-range-thumb {
+  width: 25px;
+  height: 25px;
+  background: #04AA6D;
+  cursor: pointer;
 }
