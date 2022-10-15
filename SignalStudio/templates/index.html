@@ -6,13 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- css and fonts and icons -->
     <link rel="stylesheet" href="../static/css/index.css">
+    <!-- loading the plotly library from here -->
     <script src="https://cdn.plot.ly/plotly-2.14.0.min.js"></script>
   </head>
 
   <body>
     <div class="container">
       <p class="title">Sampling studio</p>
-
+      <!-- option bar at the top -->
       <div class="opt-bar">
         <ul>
           <li>
@@ -24,10 +25,12 @@
         </ul>
       </div>
 
+      <!-- this div is the signal frame -->
       <div class="signalframe">
         <div id="myPlot" class="myPlot"></div>
       </div>
 
+      <!-- thid div is the slider -->
       <div class="slidecontainer">
         <p class="leftheader">Adjust frequency</p>
         <input type="range" id="myRange" min="0" max="10" value="5" class="slider">
@@ -35,51 +38,8 @@
       </div>
 
     </div>
+    <!-- script that handles the actions done on the page -->
+    <script src="../static/js/frame_scripts.js"></script>
 
-    <script>
-            var slider = document.getElementById("myRange");
-            var output = document.getElementById("demo");
-            output.innerHTML = slider.value;
-
-            slider.addEventListener('mouseup', function() {
-                output.innerHTML = this.value;
-                let amp = this.value
-                var exp = "Math.sin(x)";
-
-                // Generate values
-                var nxValues = [];
-                var nyValues = [];
-                for (var x = 0; x <= 40; x += 0.1) {
-                    nxValues.push(x);
-                    nyValues.push(amp * eval(exp));
-                  }
-                var data = [{x:nxValues, y:nyValues, mode:"lines"}];
-                var layout = {title: "y = " + exp,
-                          xaxis: {
-                                  autorange: true,
-                                  autoscale: true},
-                          yaxis: {
-                              autorange: true,
-                              autoscale: true}
-                          }
-              Plotly.animate("myPlot",{
-                  data: data,
-                  traces: [0],
-                  layout: layout
-              }, {
-                transition: {
-                duration: 500,
-                easing: 'cubic-in-out'
-                  },
-                frame: {
-                duration: 500
-                }
-              })
-              Plotly.relayout( "myPlot", {
-              'xaxis.autorange': true,
-              'yaxis.autorange': true
-              })
-          })
-          </script>
   </body>
 </html>
