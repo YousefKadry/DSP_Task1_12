@@ -10,8 +10,18 @@ yValues.push(eval(exp));
 
 // Display using Plotly
 var data = [{x:xValues, y:yValues, mode:"lines"}];
-var layout = {title: "y = " + exp};
-Plotly.newPlot("myPlot", data, layout);
+var layout = {
+
+  title: 'Signal displayed here',
+
+  font: {size: 18}
+
+};
+
+
+var config = {responsive: true}
+
+Plotly.newPlot("myPlot", data, layout, config);
 
 // Script for reloding the data
 var slider = document.getElementById("myRange");
