@@ -11,34 +11,56 @@
   </head>
 
   <body>
-    <div class="container">
+    <div class="page-container">
       <p class="title">Sampling studio</p>
-      <!-- option bar at the top -->
+<!-- option bar at the top -->
       <div class="opt-bar">
         <ul>
           <li>
+            <!-- <a href="#">Import Signal</a> -->
             <button type="button" name="add-signal" class="add-signal-btn">Import signal</button>
           </li>
           <li>
+            <!-- <a href="#">Import Signal</a> -->
             <button type="button" name="save-signal" class="save-signal-btn"> Save signal</button>
           </li>
         </ul>
       </div>
+<!-- middle section containing frame and other buttons -->
+      <div class="mid-section">
+        <!-- section to the left of the frame -->
+        <div id="left-options" class="left-options">
+          Here we will put the add noise section after it's finished
+        </div>
+        <!-- this div is the signal frame -->
+        <div class="signalframe">
+          <div id="myPlot" class="myPlot"></div>
+        </div>
+        <!-- section to the right of the frame -->
+        <div id="right-options" class="right-options">
+          Here we will put the add components for the signal
+        </div>
 
-      <!-- this div is the signal frame -->
-      <div class="signalframe">
-        <div id="myPlot" class="myPlot"></div>
       </div>
+
+
 
       <!-- thid div is the slider -->
       <div class="slidecontainer">
-        <p class="leftheader">Adjust frequency</p>
-        <input type="range" id="myRange" min="0" max="10" value="5" class="slider">
-        <p>Value: <span id="demo"></span></p>
+        <p class="leftheader">Adjust Amplitude</p>
+        <input type="range" id="amp" min="0" max="10" value="5" class="slider">
+        <p>Value: <span id="ampOutput"></span></p>
+      </div>
+
+      <div class="slidecontainer">
+        <p class="leftheader">Adjust Frequency</p>
+        <input type="range" id="freq" min="0" max="10" value="5" class="slider">
+        <p>Value: <span id="freqOutput"></span></p>
       </div>
 
     </div>
     <!-- script that handles the actions done on the page -->
+    <script src="../static/js/processing.js"></script>
     <script src="../static/js/frame_scripts.js"></script>
 
   </body>

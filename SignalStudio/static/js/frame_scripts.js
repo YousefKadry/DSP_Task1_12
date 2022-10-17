@@ -1,59 +1,25 @@
-var exp = "Math.sin(x)";
-
-// Generate values
-var xValues = [];
-var yValues = [];
-for (var x = 0; x <= 10; x += 0.1) {
-xValues.push(x);
-yValues.push(eval(exp));
-}
-
-// Display using Plotly
-var data = [{x:xValues, y:yValues, mode:"lines"}];
-var layout = {title: "y = " + exp};
-Plotly.newPlot("myPlot", data, layout);
+let sin_wave = new simProcessing();
+sin_wave.plot(1, 0.5);
 
 // Script for reloding the data
-var slider = document.getElementById("myRange");
-            var output = document.getElementById("demo");
-            output.innerHTML = slider.value;
+var ampSlider = document.getElementById("amp");
+var ampOutput = document.getElementById("ampOutput");
+var freqSlider = document.getElementById("freq");
+var freqOutput = document.getElementById("freqOutput");
+ampOutput.innerHTML = ampSlider.value;
+freqOutput.innerHTML = freqSlider.value;
 
-            slider.addEventListener('mouseup', function() {
-                output.innerHTML = this.value;
-                let amp = this.value
-                var exp = "Math.sin(x)";
+ampSlider.addEventListener("mouseup", function () {
+  let amp = this.value
+  ampOutput.innerHTML = amp;
+  sin_wave.change_amp(amp)})
 
-                // Generate values
-                var nxValues = [];
-                var nyValues = [];
-                for (var x = 0; x <= 40; x += 0.1) {
-                    nxValues.push(x);
-                    nyValues.push(amp * eval(exp));
-                  }
-                var data = [{x:nxValues, y:nyValues, mode:"lines"}];
-                var layout = {title: "y = " + exp,
-                          xaxis: {
-                                  autorange: true,
-                                  autoscale: true},
-                          yaxis: {
-                              autorange: true,
-                              autoscale: true}
-                          }
-              Plotly.animate("myPlot",{
-                  data: data,
-                  traces: [0],
-                  layout: layout
-              }, {
-                transition: {
-                duration: 500,
-                easing: 'cubic-in-out'
-                  },
-                frame: {
-                duration: 500
-                }
-              })
-              Plotly.relayout( "myPlot", {
-              'xaxis.autorange': true,
-              'yaxis.autorange': true
-              })
-          })
+
+freqSlider.addEventListener("mouseup", function () {
+  let freq = this.value
+  freqOutput.innerHTML = freq;
+  sin_wave.change_freq(freq)})
+
+
+
+
