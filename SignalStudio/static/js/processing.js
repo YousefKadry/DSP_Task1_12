@@ -30,13 +30,12 @@ class simProcessing {
 
 
     plot(amp, freq) {
-        this.generate(amp, freq);
-        const data1 = sin_wave.generate(1, 0.5);
-        Plotly.newPlot("myPlot", data1, this.layout, this.config);
+        const data = this.generate(amp, freq);
+        Plotly.newPlot("plot1", data, this.layout, this.config);
     }
 
 
-    change_amp(amp) {
+    async change_amp(amp) {
         let data = this.generate(amp, this.freq);
         this.amp = amp
         var layout = {
@@ -45,8 +44,8 @@ class simProcessing {
             yaxis:{range:[-10, 10]}
             
         };
-        Plotly.animate(
-        "myPlot",
+        await Plotly.animate(
+        "plot1",
         {
             layout: layout,
             data: data,
@@ -67,17 +66,18 @@ class simProcessing {
         
     }
 
-    change_freq(freq){
+    async change_freq(freq){
         let data = this.generate(this.amp, freq);
         this.freq = freq
         var layout = {
             title: "Signal displayed here",
             font: { size: 18 },
-            yaxis:{range:[-10, 10]}
+            yaxis:{range:[-11, 11]},
+            xaxis:{range:[0, 6]}
             
         };
-        Plotly.animate(
-        "myPlot",
+        await Plotly.animate(
+        "plot1",
         {
             layout: layout,
             data: data,
@@ -97,4 +97,49 @@ class simProcessing {
         );
 
     }
+
+    sampling(samplingRate){
+        let sampledX = [];
+        let sampledY = [];
+        const exp = "amp * Math.sin(2*pi*x*f)";
+        let f = this.freq
+        let amp = this.amp
+        const pi =22/7
+        let index = 0
+        for(let x=0; x<=5; x+=1/samplingRate){
+            index = Math.floor(x*1000)
+            sampledX.push(x)
+            sampledY.push(this.data[0].y[index])
+        }
+        let data = [{x:sampledX, y:sampledY, type: "line", mode: 'markers'}]
+        var layout = {
+            title: "Signal displayed here",
+            font: { size: 18 },
+            yaxis:{range:[-11, 11]},
+            xaxis:{range:[0, 6]}}
+        
+            
+        
+        Plotly.animate(
+        "plot2",
+        {
+            layout: layout,
+            data: data,
+            traces: [0]
+            
+        },
+        {
+            transition: {
+            duration: 500,
+            easing: "cubic-in-out",
+            },
+            frame: {
+            duration: 500,
+            },
+        },
+        this.config
+        );
+        // Plotly.newPlot('plot2', data, layout, this.config)
+    }
 }
+

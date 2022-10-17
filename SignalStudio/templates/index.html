@@ -34,7 +34,8 @@
         </div>
         <!-- this div is the signal frame -->
         <div class="signalframe">
-          <div id="myPlot" class="myPlot"></div>
+          <div id="plot1" class="myPlot"></div>
+          <div id="plot2" class="myPlot"></div>
         </div>
         <!-- section to the right of the frame -->
         <div id="right-options" class="right-options">
@@ -56,6 +57,12 @@
         <p class="leftheader">Adjust Frequency</p>
         <input type="range" id="freq" min="0" max="10" value="5" class="slider">
         <p>Value: <span id="freqOutput"></span></p>
+      </div>
+
+      <div class="slidecontainer">
+        <p class="leftheader">Adjust SAmpling Rate</p>
+        <input type="range" id="samplingRate" min="0" max="10" value="0" class="slider">
+        <p>Value: <span id="SROutput"></span></p>
       </div>
 
     </div>
