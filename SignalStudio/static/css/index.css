@@ -62,11 +62,32 @@
 
 
 /* signal frams styling */
+.mid-section {
+  margin-top: 1rem;
+  margin-bottom: 1rem
+}
+.mid-section > div {
+  display: table-cell;
+}
+.left-options {
+  padding: 0.5rem;
+  text-align: center;
+  min-width: 20%;
+  max-width: 10%;
+  background-color: #eee;
+}
 .signalframe {
-  max-width: 100%;
-  min-width: 60%;
+  max-width: 50%;
+  min-width: 50%;
   display: flex;
   justify-content: center;
+}
+.right-options {
+  padding: 0.5rem;
+  text-align: center;
+  min-width: 20%;
+  max-width: 10%;
+  background-color: #eee;
 }
 #myPlot {
   max-width: 60%;
