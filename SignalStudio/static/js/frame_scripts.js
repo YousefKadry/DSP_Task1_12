@@ -44,3 +44,4 @@ freqSlider.addEventListener("mouseup", async function () {
   await sin_wave.change_freq(freq)
   sin_wave.sampling(samplingRate);
 })
+
