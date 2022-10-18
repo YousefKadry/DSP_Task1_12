@@ -44,6 +44,7 @@ class simProcessing {
         var layout = {
             title: "Signal displayed here",
             font: { size: 18 },
+
             yaxis:{range:[-10, 10]},
             xaxis:{range:[-0.5, 6]}
             
@@ -54,7 +55,7 @@ class simProcessing {
             layout: layout,
             data: data,
             traces: [0]
-            
+
         },
         {
             transition: {
@@ -67,7 +68,7 @@ class simProcessing {
         },
         this.config
         );
-        
+
     }
 
     async change_freq(freq){
@@ -86,7 +87,7 @@ class simProcessing {
             layout: layout,
             data: data,
             traces: [0]
-            
+
         },
         {
             transition: {
@@ -132,7 +133,7 @@ class simProcessing {
             layout: layout,
             data: data,
             traces: [0]
-            
+
         },
         {
             transition: {
@@ -147,4 +148,3 @@ class simProcessing {
         );
     }
 }
-
