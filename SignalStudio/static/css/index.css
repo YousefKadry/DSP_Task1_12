@@ -22,6 +22,7 @@
     display: flex;
     align-items: center;
     box-sizing: border-box;
+    border-radius: 25px;
   }
   ul{
       list-style: none;
@@ -42,7 +43,6 @@
     min-width: 20%;
     font-size: 1rem;
     font-weight: bold;
-    display: block;
     padding-top: 2%;
     text-align: left;
   }
@@ -53,7 +53,7 @@
     padding-top: 2%;
     text-align: right;
   }
-  .add-signal-btn, .save-signal-btn {
+  .add-signal-btn, .save-signal-btn, .add-noise-btn {
     padding: 0.9em;
     margin:0.5em;
     min-width: 100px;
@@ -63,7 +63,7 @@
     background-color: #19345D;
     color:white;
   }
-  .add-signal-btn:hover, .save-signal-btn:hover {
+  button:hover {
     background-color: #192639;
     color:#eee;
   }
@@ -74,7 +74,7 @@
   margin-top: 1rem;
   margin-bottom: 1rem;
   display: flex;
-  align-items: top  ;
+  align-items: top;
 }
 .mid-section > div {
   display: table-cell;
@@ -87,6 +87,10 @@
   width: 20vw;
   height: 69vh;
   background-color: #eee;
+}
+.add-noise-section {
+  display: none;
+  margin-top: 0.8rem;
 }
 .signalframe {
   min-width: 60vw;
