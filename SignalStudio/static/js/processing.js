@@ -8,6 +8,9 @@ class simProcessing {
         this.layout = {
             title: "Signal displayed here",
             font: { size: 18 },
+            xaxis:{range:[-0.5, 6]},
+            yaxis:{range:[-10, 10]}
+
     };
     }
 
@@ -41,7 +44,8 @@ class simProcessing {
         var layout = {
             title: "Signal displayed here",
             font: { size: 18 },
-            yaxis:{range:[-10, 10]}
+            yaxis:{range:[-10, 10]},
+            xaxis:{range:[-0.5, 6]}
             
         };
         await Plotly.animate(
@@ -73,7 +77,7 @@ class simProcessing {
             title: "Signal displayed here",
             font: { size: 18 },
             yaxis:{range:[-11, 11]},
-            xaxis:{range:[0, 6]}
+            xaxis:{range:[-0.5, 6]}
             
         };
         await Plotly.animate(
@@ -101,22 +105,24 @@ class simProcessing {
     sampling(samplingRate){
         let sampledX = [];
         let sampledY = [];
-        const exp = "amp * Math.sin(2*pi*x*f)";
-        let f = this.freq
-        let amp = this.amp
-        const pi =22/7
-        let index = 0
-        for(let x=0; x<=5; x+=1/samplingRate){
-            index = Math.floor(x*1000)
-            sampledX.push(x)
-            sampledY.push(this.data[0].y[index])
+        // const exp = "amp * Math.sin(2*pi*x*f)";
+        // let f = this.freq
+        // let amp = this.amp
+        // const pi =22/7
+        let x = this.data[0].x
+        let y =this.data[0].y
+        let step = Math.floor((x.length / x[x.length-1])/samplingRate)
+        for(let i=0; i<x.length; i+=step){
+            
+            sampledX.push(x[i])
+            sampledY.push(y[i])
         }
         let data = [{x:sampledX, y:sampledY, type: "line", mode: 'markers'}]
         var layout = {
             title: "Signal displayed here",
             font: { size: 18 },
             yaxis:{range:[-11, 11]},
-            xaxis:{range:[0, 6]}}
+            xaxis:{range:[-0.5, 6]}}
         
             
         
@@ -139,7 +145,6 @@ class simProcessing {
         },
         this.config
         );
-        // Plotly.newPlot('plot2', data, layout, this.config)
     }
 }
 
