@@ -42,7 +42,7 @@ class simProcessing {
             title: "Signal displayed here",
             font: { size: 18 },
             yaxis:{range:[-10, 10]}
-            
+
         };
         await Plotly.animate(
         "plot1",
@@ -50,7 +50,7 @@ class simProcessing {
             layout: layout,
             data: data,
             traces: [0]
-            
+
         },
         {
             transition: {
@@ -63,7 +63,7 @@ class simProcessing {
         },
         this.config
         );
-        
+
     }
 
     async change_freq(freq){
@@ -74,7 +74,7 @@ class simProcessing {
             font: { size: 18 },
             yaxis:{range:[-11, 11]},
             xaxis:{range:[0, 6]}
-            
+
         };
         await Plotly.animate(
         "plot1",
@@ -82,7 +82,7 @@ class simProcessing {
             layout: layout,
             data: data,
             traces: [0]
-            
+
         },
         {
             transition: {
@@ -117,16 +117,16 @@ class simProcessing {
             font: { size: 18 },
             yaxis:{range:[-11, 11]},
             xaxis:{range:[0, 6]}}
-        
-            
-        
+
+
+
         Plotly.animate(
         "plot2",
         {
             layout: layout,
             data: data,
             traces: [0]
-            
+
         },
         {
             transition: {
@@ -142,4 +142,3 @@ class simProcessing {
         // Plotly.newPlot('plot2', data, layout, this.config)
     }
 }
-
