@@ -5,6 +5,8 @@ var ampOutput = document.getElementById("ampOutput");
 var freqSlider = document.getElementById("freq");
 var freqOutput = document.getElementById("freqOutput");
 var noiseToggle = document.getElementById("noiseToggle");
+var addNoiseBtn = document.getElementById("add-noise-btn");
+var snrValue = document.getElementById("snrValue");
 var SRSLider = document.getElementById("samplingRate")
 var SROutput = document.getElementById("SROutput")
 ampOutput.innerHTML = ampSlider.value;
@@ -14,7 +16,7 @@ SROutput.innerHTML = SRSLider.value;
 //For the original signal graph, plot signal from inital value on freq/amp sliders
 sin_wave.plot(ampSlider.value, freqSlider.value);
 Plotly.newPlot('plot2', [{x:[0],y:[0]}], {yaxis:{range:[-11, 11]},
-xaxis:{range:[-11, 11]}}, sin_wave.config)
+xaxis:{range:[-11, 11]}}, sin_wave.config);
 //for the sampled signal graph, plot an inital signal from the values on the sliders
 sin_wave.sampling(SRSLider.value);
 
@@ -46,14 +48,33 @@ freqSlider.addEventListener("mouseup", async function () {
   sin_wave.sampling(samplingRate);
 })
 
-//function that toggles Noise
+//function that toggles noise and shows/hides noise section
+document.getElementById("noiseToggle").checked = false; //first make sure checkbox is turned off when page loads
 noiseToggle.addEventListener('change', function() {
   if (this.checked) {
+    //show noise section
       document.getElementById("add-noise-section").style.display = "block";
+      let samplingRate = SRSLider.value;
+      sin_wave.sampling(samplingRate);
    } else {
+    //hide noise signal, remove the noisy signal and display original signal
      document.getElementById("add-noise-section").style.display = "none";
+     //code that displays original signal without noise
+     console.log("noise removed");
+     Plotly.newPlot("plot1", sin_wave.data, sin_wave.layout, sin_wave.config);
+     console.log(sin_wave.data[0].y);
    }
 })
+
+//method that runs when you click the apply noise button
+addNoiseBtn.addEventListener("click", function () {
+    //check that method works, obviously
+    console.log("Hello there");
+    //get the input value from the input field and print it on the console
+    SNR = snrValue.value;
+    //Use the value to generate noise
+    sin_wave.generateNoise(SNR);
+ })
 
 // function showNoiseSection (box) {
 //     if(chkbox.checked){

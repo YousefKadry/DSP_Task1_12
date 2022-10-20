@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "cwise": "^1.0.10",
+    "numjs": "^0.16.1"
+  }
+}
