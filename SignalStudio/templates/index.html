@@ -7,7 +7,11 @@
     <!-- css and fonts and icons -->
     <link rel="stylesheet" href="../static/css/index.css">
     <!-- loading the plotly library from here -->
-    <script src="https://cdn.plot.ly/plotly-2.14.0.min.js"></script>
+      <script src="https://cdn.plot.ly/plotly-2.14.0.min.js"></script>
+    <!-- including the numjs library -->
+      <script src="https://cdn.jsdelivr.net/gh/nicolaspanel/numjs@0.15.1/dist/numjs.min.js"></script>
+    <!-- including the wave resampler -->
+      <script src="https://cdn.jsdelivr.net/npm/wave-resampler"></script>
   </head>
 
   <body>
@@ -33,7 +37,7 @@
           <!-- Sampling rate slider -->
           <div class="optioncontainer">
             <p class="leftheader">Adjust Sampling Rate</p>
-            <input type="range" id="samplingRate" min="0" max="10" value="0" class="slider">
+            <input type="range" id="samplingRate" min="0" max="10" value="1" class="slider">
             <p>Value: <span id="SROutput"></span></p>
           </div>
           <!-- thid div is the amplitude slider -->
@@ -53,12 +57,12 @@
             <!-- Add noise checkbox -->
             <input class="noise-toggle" type="checkbox" value="0" id="noiseToggle" >
             <label class="leftheader" for="noise-toggle">
-              Enable Noise 
+              Enable Noise
             </label>
             <div class="add-noise-section" id="add-noise-section">
               <label class="leftheader" for="snrValue">SNR value</label>
-              <input type="number" id="snrValue" class="form-control" />
-              <button type="button" name="button" class="add-noise-btn">Apply noise</button>
+              <input type="number" min="0" id="snrValue" class="form-control" />
+              <button type="button" name="button" id="add-noise-btn" class="add-noise-btn">Apply noise</button>
             </div>
           </div>
 

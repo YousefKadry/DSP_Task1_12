@@ -115,10 +115,10 @@
 
 /* Slider styling */
 input[type="range"] {
--webkit-appearance: none;
+  -webkit-appearance: none;
 }
 input[type="range"]:focus {
-outline: none;
+  outline: none;
 }
 .optioncontainer {
   max-width: 80%;
