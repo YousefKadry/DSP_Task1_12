@@ -37,7 +37,7 @@
           <!-- Sampling rate slider -->
           <div class="optioncontainer">
             <p class="leftheader">Adjust Sampling Rate</p>
-            <input type="range" id="samplingRate" min="0" max="10" value="1" class="slider">
+            <input type="range" id="samplingRate" min="0" max="10" value="0" class="slider">
             <p>Value: <span id="SROutput"></span></p>
           </div>
           <!-- thid div is the amplitude slider -->
@@ -55,7 +55,7 @@
           <!-- Add noise section -->
           <div class="optioncontainer">
             <!-- Add noise checkbox -->
-            <input class="noise-toggle" type="checkbox" value="0" id="noiseToggle" >
+            <input class="noise-toggle" type="checkbox" value="0" id="noiseToggle" onChange = on_change()>
             <label class="leftheader" for="noise-toggle">
               Enable Noise
             </label>

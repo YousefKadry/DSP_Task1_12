@@ -4,7 +4,8 @@ class simProcessing {
         this.data = [{ x: [0], y: [0], mode: "lines", type: "line" }];
         this.freq = 0;
         this.amp = 0;
-        this.noisySignal = [{ x: this.data[0].x, y: [0], mode: "lines", type: "line" }];
+        this.noisySignal = [{ x: [0], y: [0], mode: "lines", type: "line" }];
+        this.sampledSignal = [{ x: [0], y: [0], mode: "lines", type: "line" }];
         this.config = { responsive: true };
         this.layout = {
             title: "Signal displayed here",
@@ -27,83 +28,29 @@ class simProcessing {
             xdata.push(x);
             ydata.push(eval(exp));
         }
-        const data1 = [{ x: xdata, y: ydata, mode: "lines", type: "line" }];
-        this.data = data1;
-        return this.data;
+        const data = [{ x: xdata, y: ydata, mode: "lines", type: "line" }];
+        return data;
     }
 
 
     plot(amp, freq) {
-        const data = this.generate(amp, freq);
-        Plotly.newPlot("plot1", data, this.layout, this.config);
+        this.data = this.generate(amp, freq);
+        Plotly.newPlot("plot1", this.data, this.layout, this.config);
     }
 
 
 
-    async change_amp(amp) {
-        let data = this.generate(amp, this.freq);
+    change_amp(amp){
+        this.data = this.generate(amp, this.freq);
         this.amp = amp
-        var layout = {
-            title: "Signal displayed here",
-            font: { size: 18 },
-
-            yaxis:{range:[-10, 10]},
-            xaxis:{range:[-0.5, 6]}
-
-        };
-        await Plotly.animate(
-        "plot1",
-        {
-            layout: layout,
-            data: data,
-            traces: [0]
-
-        },
-        {
-            transition: {
-            duration: 500,
-            easing: "cubic-in-out",
-            },
-            frame: {
-            duration: 500,
-            },
-        },
-        this.config
-        );
-
     }
 
-    async change_freq(freq){
-        let data = this.generate(this.amp, freq);
+    change_freq(freq){
+        this.data = this.generate(this.amp, freq);
         this.freq = freq
-        var layout = {
-            title: "Signal displayed here",
-            font: { size: 18 },
-            yaxis:{range:[-11, 11]},
-            xaxis:{range:[-0.5, 6]}
-
-        };
-        await Plotly.animate(
-        "plot1",
-        {
-            layout: layout,
-            data: data,
-            traces: [0]
-
-        },
-        {
-            transition: {
-            duration: 500,
-            easing: "cubic-in-out",
-            },
-            frame: {
-            duration: 500,
-            },
-        },
-        this.config
-        );
-
     }
+
+
 
     sampling(samplingRate){
         let sampledX = [];
@@ -112,83 +59,57 @@ class simProcessing {
         // let f = this.freq
         // let amp = this.amp
         // const pi =22/7
-        let x = this.data[0].x
-        let y =this.data[0].y
+        let x = [...this.data[0].x]
+        let y = [...this.data[0].y]
         let step = Math.floor((x.length / x[x.length-1])/samplingRate)
         for(let i=0; i<x.length; i+=step){
 
             sampledX.push(x[i])
             sampledY.push(y[i])
         }
-        let data = [{x:sampledX, y:sampledY, type: "line", mode: 'markers'}]
+        this.sampledSignal = [{x:sampledX, y:sampledY, type: "line", mode: 'markers'}]
         //  Resampler/interpolator code
         // let newSamples = waveResampler.resample(data[0].y , samplingRate , 5000, {method: "sinc", LPF: true});
         // console.log(newSamples);
         // let data1 = [{x:this.data[0].x, y:newSamples, type: "line", mode: 'line'}]
 
-        var layout = {
-            title: "Signal displayed here",
-            font: { size: 18 },
-            yaxis:{range:[-11, 11]},
-            xaxis:{range:[-0.5, 6]}}
-
-
-
-        Plotly.animate(
-        "plot2",
-        {
-            layout: layout,
-            data: data,
-            traces: [0]
-
-        },
-        {
-            transition: {
-            duration: 500,
-            easing: "cubic-in-out",
-            },
-            frame: {
-            duration: 500,
-            },
-        },
-        this.config
-        );
     }
 
+
+
 //this function generates the noisy signal and plots it
-   generateNoise(SNR){
+    generateNoise(SNR){
      //check to make sure that the SNR is a positive value, if not, no noise will be added
-      if(SNR>=0){
+        if(SNR>=0){
         //print the SNR value, for reasons.
         console.log(SNR);
+        this.noisySignal[0].y = [...this.data[0].y]
         var copiedY =  this.data[0].y;
-        this.noisySignal[0].y = copiedY;
         //we calculate the average of the square values of y (aka the power)
         var sum_power =0;
-        for (var itr = 0; itr <this.noisySignal[0].y.length ; itr += 1) {
-            var powerComponent = Math.pow(this.noisySignal[0].y[itr],2);
-             sum_power += powerComponent;
+        for (var itr = 0; itr <copiedY.length ; itr += 1) {
+            var powerComponent = Math.pow(copiedY[itr],2);
+            sum_power += powerComponent;
             // console.log(this.noisySignal[0].y[itr]);
         }
         //then we get the average of the power (divide by the number of values)
-        var signal_power = Math.sqrt(sum_power/this.noisySignal[0].y.length);
+        var signal_power = Math.sqrt(sum_power/copiedY.length);
 
         //we add a random noise component based on the SNR to the signal values
-        for (var itr = 0; itr <this.noisySignal[0].y.length ; itr += 1) {
+        for (var itr = 0; itr <copiedY.length ; itr += 1) {
             var noiseComponent = this.getNormallyDistributedRandomNumber(0, signal_power/SNR);
             // noiseComponent.push(getNormallyDistributedRandomNumber(mean, stddev));
             this.noisySignal[0].y[itr] += noiseComponent;
         }
-
+        this.noisySignal[0].x = this.data[0].x
         // plotting the noisy signal
-        Plotly.newPlot("plot1", this.noisySignal, this.layout, this.config);
-      }
-      else {
+        }
+        else {
         //this code informs the user that the SNR value is negative, could be improved
         console.log("your snr input must be a positive value");
         window.alert("your snr input must be a positive value");
         SNR=0;
-      }
+        }
     }
 
     //functions for generating a gaussian distributed variable
@@ -209,7 +130,35 @@ class simProcessing {
     }
 
 
-}
+    plotNoisySignal(){
+
+        Plotly.newPlot("plot1", this.noisySignal, this.layout, this.config);
+    }
+
+    async animatePlot(plotName, data){
+        await Plotly.animate(
+            plotName,
+            {
+                layout: this.layout,
+                data: data,
+                traces: [0]
+    
+            },
+            {
+                transition: {
+                duration: 500,
+                easing: "cubic-in-out",
+                },
+                frame: {
+                duration: 500,
+                },
+            },
+            this.config
+            );
+        }
+    }
+
+
 
 //could be useful later on
 /*
@@ -249,3 +198,4 @@ for (var itr = 0; itr <5 ; itr += 0.001) {
     this.noisySignal[0].y[itr] =+ noiseComponent;
 }
 */
+
