@@ -1,30 +1,32 @@
 class simProcessing {
     constructor() {
     // Constructor
-        this.data = [{ x: [0], y: [0], mode: "lines", type: "line" }];
+        this.data = [{ x: [], y: [], mode: "lines", type: "line" }];
         this.freq = 0;
         this.amp = 0;
+        this.addedSignalNum = 0
         this.noisySignal = [{ x: [0], y: [0], mode: "lines", type: "line" }];
         this.sampledSignal = [{ x: [0], y: [0], mode: "lines", type: "line" }];
         this.config = { responsive: true };
+        this.time = 5
+        this.signalList = {}
         this.layout = {
             title: "Signal displayed here",
             font: { size: 18 },
-            xaxis:{range:[-0.5, 6]},
-            yaxis:{range:[-10, 10]}
-
+            
     };
     }
 
 
-    generate(amp, f) {
+    generate(amp, f, time = this.time) {
         const exp = "amp * Math.sin(2*pi*x*f)";
         const pi = 22 / 7;
         this.freq = f;
         this.amp = amp;
+        this.time = time;
         let xdata = [];
         let ydata = [];
-        for (var x = 0; x <= 5; x += 0.001) {
+        for (var x = 0; x <= this.time; x += 0.001) {
             xdata.push(x);
             ydata.push(eval(exp));
         }
@@ -52,22 +54,26 @@ class simProcessing {
 
 
 
-    sampling(samplingRate){
+    sampling(samplingRate, data = this.data){
         let sampledX = [];
         let sampledY = [];
-        // const exp = "amp * Math.sin(2*pi*x*f)";
-        // let f = this.freq
-        // let amp = this.amp
-        // const pi =22/7
-        let x = [...this.data[0].x]
-        let y = [...this.data[0].y]
+        let x = [...data[0].x]
+        console.log(x.length)
+        let y = [...data[0].y]
+        console.log(y.length)
         let step = Math.floor((x.length / x[x.length-1])/samplingRate)
+        console.log(step)
+
         for(let i=0; i<x.length; i+=step){
 
             sampledX.push(x[i])
             sampledY.push(y[i])
         }
-        this.sampledSignal = [{x:sampledX, y:sampledY, type: "line", mode: 'markers'}]
+        console.log(sampledY)
+        
+        this.sampledSignal = [{x:sampledX, y:sampledY, type: "line", mode: 'markers'}] 
+        console.log(this.sampledSignal)
+
         //  Resampler/interpolator code
         // let newSamples = waveResampler.resample(data[0].y , samplingRate , 5000, {method: "sinc", LPF: true});
         // console.log(newSamples);
@@ -123,6 +129,7 @@ class simProcessing {
         return { z0, z1 };
     }
 
+    
     getNormallyDistributedRandomNumber(mean, stddev) {
         const { z0, _ } = this.boxMullerTransform();
 
@@ -156,46 +163,35 @@ class simProcessing {
             this.config
             );
         }
+
+        addSignal(amp, freq){
+            let newSignal = {amp:amp, freq:freq}
+            let addedSignal = this.generate(amp, freq)
+            this.addedSignalNum+=1
+            if(!this.data[0].x[5]){
+                this.data = this.generate(0, 0)
+            }
+            this.signalList[`Signal${this.addedSignalNum}`] = newSignal;
+            let y = addedSignal[0].y;
+            for(let i=0; i<y.length; i+=1){
+                this.data[0].y[i] += y[i]
+            }
+        }
+
+
+        deleteSignal(signalName){
+            let amp = this.signalList[signalName].amp
+            let freq = this.signalList[signalName].freq
+            let deletedSignal = this.generate(amp, freq)
+            let y = deletedSignal[0].y;
+            for(let i=0; i<y.length; i+=1){
+                this.data[0].y[i] -= y[i]
+            }
+            delete this.signalList[signalName];
+
+        }
     }
 
 
 
-//could be useful later on
-/*
-// get the original signal and square it
-this.noisySignal[0].y = this.data[0].y;
-for (var itr = 0; itr <this.noisySignal[0].y.length ; itr += 1) {
-    var powerComponent = Math.pow(this.noisySignal[0].y[itr],2);
-    this.noisySignal[0].y[itr] = powerComponent;
-    // console.log(this.noisySignal[0].y[itr]);
-}
-var signal_power = nj.array(this.data[0].y).mean();
-var signal_power_db = 10*Math.log10(signal_power);
-var snr_db = 10*Math.log10(SNR);
-var noise_power_db = signal_power_db - snr_db;
-var noise_power = Math.pow(10,noise_power_db/10);
-for (var itr = 0; itr <this.noisySignal[0].y.length ; itr += 1) {
-    var noiseComponent = this.getNormallyDistributedRandomNumber(0, Math.sqrt(noise_power));
-    // noiseComponent.push(getNormallyDistributedRandomNumber(mean, stddev));
-    this.noisySignal[0].y[itr] += noiseComponent;
-}*/
-
-
-/*
-//calculating the mean amplitude of the signal
-var mean_sig_amp=nj.array(this.data[0].y).mean();
-console.log(mean_sig_amp);
-// calculating the mean noise amplitude
-var mean_noise_amp = mean_sig_amp / SNR;
-console.log(mean_noise_amp);
-//generating noise component
-// const noiseComponent = []
-const mean   = 0;
-const stddev = mean_noise_amp;
-for (var itr = 0; itr <5 ; itr += 0.001) {
-    var noiseComponent = this.getNormallyDistributedRandomNumber(mean, stddev);
-    // noiseComponent.push(getNormallyDistributedRandomNumber(mean, stddev));
-    this.noisySignal[0].y[itr] =+ noiseComponent;
-}
-*/
 

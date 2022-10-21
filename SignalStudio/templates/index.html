@@ -1,46 +1,83 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <title>Sampling studio masr</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- css and fonts and icons -->
-    <link rel="stylesheet" href="../static/css/index.css">
-    <!-- loading the plotly library from here -->
-      <script src="https://cdn.plot.ly/plotly-2.14.0.min.js"></script>
-    <!-- including the numjs library -->
-      <script src="https://cdn.jsdelivr.net/gh/nicolaspanel/numjs@0.15.1/dist/numjs.min.js"></script>
-    <!-- including the wave resampler -->
-      <script src="https://cdn.jsdelivr.net/npm/wave-resampler"></script>
-  </head>
 
-  <body>
-    <div class="page-container">
-      <p class="title">Sampling studio</p>
-<!-- option bar at the top -->
-      <div class="opt-bar">
-        <ul>
-          <li>
-            <!-- <a href="#">Import Signal</a> -->
-            <button type="button" name="add-signal" class="add-signal-btn">Import signal</button>
-          </li>
-          <li>
-            <!-- <a href="#">Import Signal</a> -->
-            <button type="button" name="save-signal" class="save-signal-btn"> Save signal</button>
-          </li>
-        </ul>
-      </div>
-<!-- middle section containing frame and other buttons -->
-      <div class="mid-section">
-        <!-- section to the left of the frame -->
-        <div id="left-options" class="left-options">
-          <!-- Sampling rate slider -->
-          <div class="optioncontainer">
-            <p class="leftheader">Adjust Sampling Rate</p>
-            <input type="range" id="samplingRate" min="0" max="10" value="0" class="slider">
-            <p>Value: <span id="SROutput"></span></p>
+<head>
+  <title>Sampling studio masr</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- css and fonts and icons -->
+  <link rel="stylesheet" href="../static/css/index.css">
+  <!-- loading the plotly library from here -->
+  <script src="https://cdn.plot.ly/plotly-2.14.0.min.js"></script>
+  <!-- including the numjs library -->
+  <script src="https://cdn.jsdelivr.net/gh/nicolaspanel/numjs@0.15.1/dist/numjs.min.js"></script>
+  <!-- including the wave resampler -->
+  <script src="https://cdn.jsdelivr.net/npm/wave-resampler"></script>
+</head>
+
+<body>
+  <div class="page-container">
+    <p class="title">Sampling studio</p>
+    <!-- option bar at the top -->
+    <div class="opt-bar">
+      <ul>
+        <li>
+          <!-- <a href="#">Import Signal</a> -->
+          <button type="button" name="add-signal" class="add-signal-btn">Import signal</button>
+        </li>
+        <li>
+          <!-- <a href="#">Import Signal</a> -->
+          <button type="button" name="save-signal" class="save-signal-btn"> Save signal</button>
+        </li>
+      </ul>
+    </div>
+    <!-- middle section containing frame and other buttons -->
+    <div class="mid-section">
+      <!-- section to the left of the frame -->
+      <div id="left-options" class="left-options">
+        <!-- Sampling rate slider -->
+        <div class="optioncontainer">
+          <p class="leftheader">Adjust Sampling Rate</p>
+          <input type="range" id="samplingRate" min="0" max="10" value="0" class="slider">
+          <p>Value: <span id="SROutput"></span></p>
+        </div>
+        <!-- thid div is the amplitude slider -->
+        <!-- <div class="optioncontainer">
+          <p class="leftheader">Adjust Amplitude</p>
+          <input type="range" id="amp" min="0" max="10" value="5" class="slider">
+          <p>Value: <span id="ampOutput"></span></p>
+        </div>
+        <!-- thid div is the Frequency slider -->
+        <!-- <div class="optioncontainer">
+          <p class="leftheader">Adjust Frequency</p>
+          <input type="range" id="freq" min="0" max="10" value="5" class="slider">
+          <p>Value: <span id="freqOutput"></span></p>
+        </div> --> 
+        <!-- Add noise section -->
+        <div class="optioncontainer">
+          <!-- Add noise checkbox -->
+          <input class="noise-toggle" type="checkbox" value="0" id="noiseToggle" onChange=on_change()>
+          <label class="leftheader" for="noise-toggle">
+            Enable Noise
+          </label>
+          <div class="add-noise-section" id="add-noise-section">
+            <label class="leftheader" for="snrValue">SNR value</label>
+            <input type="number" min="0" id="snrValue" class="form-control" />
+            <button type="button" name="button" id="add-noise-btn" class="add-noise-btn">Apply noise</button>
           </div>
-          <!-- thid div is the amplitude slider -->
+        </div>
+
+
+      </div>
+      <!-- this div is the signal frame -->
+      <div class="signalframe">
+        <div id="plot1" class="myPlot"></div>
+        <div id="plot2" class="myPlot"></div>
+      </div>
+      <!-- section to the right of the frame -->
+      <div id="right-options" class="right-options">
+        <button type="button" name="button" id="compose" class="add-noise-btn">Compose</button>
+        <form id = 'composerForm'>
           <div class="optioncontainer">
             <p class="leftheader">Adjust Amplitude</p>
             <input type="range" id="amp" min="0" max="10" value="5" class="slider">
@@ -52,37 +89,23 @@
             <input type="range" id="freq" min="0" max="10" value="5" class="slider">
             <p>Value: <span id="freqOutput"></span></p>
           </div>
-          <!-- Add noise section -->
-          <div class="optioncontainer">
-            <!-- Add noise checkbox -->
-            <input class="noise-toggle" type="checkbox" value="0" id="noiseToggle" onChange = on_change()>
-            <label class="leftheader" for="noise-toggle">
-              Enable Noise
-            </label>
-            <div class="add-noise-section" id="add-noise-section">
-              <label class="leftheader" for="snrValue">SNR value</label>
-              <input type="number" min="0" id="snrValue" class="form-control" />
-              <button type="button" name="button" id="add-noise-btn" class="add-noise-btn">Apply noise</button>
-            </div>
+          <div>
+            <button type="button" name="button" id="addSignalBtn" class="add-noise-btn">Add Signal</button>
           </div>
+          <select id="addedSignals">
+          </select>
+          <button type="button" name="button" id="deleteBtn" class="add-noise-btn">Delete</button>
 
+      </form>
 
-        </div>
-        <!-- this div is the signal frame -->
-        <div class="signalframe">
-          <div id="plot1" class="myPlot"></div>
-          <div id="plot2" class="myPlot"></div>
-        </div>
-        <!-- section to the right of the frame -->
-        <div id="right-options" class="right-options">
-          Here we will put the add components for the signal
-        </div>
       </div>
-
     </div>
-    <!-- script that handles the actions done on the page -->
-    <script src="../static/js/processing.js"></script>
-    <script src="../static/js/frame_scripts.js"></script>
 
-  </body>
+  </div>
+  <!-- script that handles the actions done on the page -->
+  <script src="../static/js/processing.js"></script>
+  <script src="../static/js/frame_scripts.js"></script>
+
+</body>
+
 </html>
