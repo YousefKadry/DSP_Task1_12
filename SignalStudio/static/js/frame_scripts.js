@@ -14,6 +14,9 @@ let composeForm = document.getElementById("composerForm");
 let addSignalBtn = document.getElementById("addSignalBtn");
 let signalsMenue = document.getElementById("addedSignals");
 let deleteSignalBtn = document.getElementById('deleteBtn');
+let importBtn = document.getElementById('importSignal')
+let saveBtn = document.getElementById('saveSignal')
+let downloadLink = document.getElementById('download')
 ampOutput.innerHTML = ampSlider.value;
 freqOutput.innerHTML = freqSlider.value;
 SROutput.innerHTML = SRSLider.value;
@@ -74,7 +77,7 @@ const on_change = () => {
     //show noise section
     document.getElementById("add-noise-section").style.display = "block";
     if (snrValue.value) {
-      sin_wave.generateNoise(SNR);
+      sin_wave.generateNoise(snrValue.value);
       sin_wave.plotNoisySignal();
       sin_wave.sampling(SRSLider.value, sin_wave.noisySignal);
       sin_wave.animatePlot("plot2", sin_wave.sampledSignal);
@@ -119,10 +122,11 @@ composeBtn.onclick = () => {
     composeForm.style.display = "none";
     formStatus = false;
   }
+}
   addSignalBtn.onclick = async() => {
     sin_wave.addSignal(ampSlider.value, freqSlider.value);
     if (noiseToggle.checked) {
-      sin_wave.generateNoise(SNR);
+      sin_wave.generateNoise(snrValue.value);
       sin_wave.animatePlot("plot1", sin_wave.noisySignal);
       await sin_wave.animatePlot("plot1", sin_wave.noisySignal);
       sin_wave.sampling(SRSLider.value, sin_wave.noisySignal);
@@ -130,6 +134,7 @@ composeBtn.onclick = () => {
       sin_wave.animatePlot("plot2", sin_wave.sampledSignal);
     } else {
       sin_wave.animatePlot("plot1", sin_wave.data);
+      console.log(sin_wave.data)
       await sin_wave.animatePlot("plot1", sin_wave.data);
       sin_wave.sampling(SRSLider.value);
       sin_wave.animatePlot("plot2", sin_wave.sampledSignal);
@@ -148,7 +153,7 @@ composeBtn.onclick = () => {
   deleteSignalBtn.onclick = async ()=>{
     sin_wave.deleteSignal(signalsMenue.value);
     if (noiseToggle.checked) {
-      sin_wave.generateNoise(SNR);
+      sin_wave.generateNoise(snrValue.value);
       sin_wave.animatePlot("plot1", sin_wave.noisySignal);
       await sin_wave.animatePlot("plot1", sin_wave.noisySignal);
       sin_wave.sampling(SRSLider.value, sin_wave.noisySignal);
@@ -167,6 +172,45 @@ composeBtn.onclick = () => {
 
   }
 
-};
+  importBtn.oninput=(e)=>{
+    let file = e.target.files[0];
+    // let data = d3.csvParse(file);
+    var reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = function (event) {
+        var csvData = event.target.result;
 
+        let parsedCSV = d3.csvParse(csvData)
+        sin_wave.importSignal(parsedCSV)
+        let signalNum = sin_wave.addedSignalNum
+        let option = document.createElement("option");
+        option.text = `Signal${signalNum}  imported Signal`
+        option.value = `Signal${signalNum}`
+        signalsMenue.appendChild(option);
+        sin_wave.animatePlot('plot1', sin_wave.data)
+        sin_wave.animatePlot('plot1', sin_wave.data)
+
+      }
+  }
+  saveBtn.onclick = ()=>{
+    let csvData = []
+    if (noiseToggle.checked) {
+      csvData = sin_wave.saveCSV(sin_wave.noisySignal[0].x, sin_wave.noisySignal[0].y)
+    }
+    else{
+      csvData = sin_wave.saveCSV(sin_wave.data[0].x, sin_wave.data[0].y)
+    }
+    let csv = 'x,y\n'; 
+    //merge the data with CSV  
+    csvData.forEach(function(row) {  
+            csv += row.join(',');  
+            csv += "\n";  
+    });  
+    //display the created CSV data on the web browser   
+
+    downloadLink.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);  
+    //provide the name for the CSV file to be downloaded  
+    downloadLink.download = 'Signal.csv';  
+}  
+  
 

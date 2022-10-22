@@ -9,7 +9,9 @@ class simProcessing {
         this.sampledSignal = [{ x: [0], y: [0], mode: "lines", type: "line" }];
         this.config = { responsive: true };
         this.time = 5
+        this.step = .001
         this.signalList = {}
+        this.imported = false
         this.layout = {
             title: "Signal displayed here",
             font: { size: 18 },
@@ -18,7 +20,7 @@ class simProcessing {
     }
 
 
-    generate(amp, f, time = this.time) {
+    generate(amp, f, time = this.time, step = this.step) {
         const exp = "amp * Math.sin(2*pi*x*f)";
         const pi = 22 / 7;
         this.freq = f;
@@ -26,7 +28,7 @@ class simProcessing {
         this.time = time;
         let xdata = [];
         let ydata = [];
-        for (var x = 0; x <= this.time; x += 0.001) {
+        for (var x = 0; x <= this.time; x += step) {
             xdata.push(x);
             ydata.push(eval(exp));
         }
@@ -58,21 +60,16 @@ class simProcessing {
         let sampledX = [];
         let sampledY = [];
         let x = [...data[0].x]
-        console.log(x.length)
         let y = [...data[0].y]
-        console.log(y.length)
         let step = Math.floor((x.length / x[x.length-1])/samplingRate)
-        console.log(step)
 
         for(let i=0; i<x.length; i+=step){
 
             sampledX.push(x[i])
             sampledY.push(y[i])
         }
-        console.log(sampledY)
         
         this.sampledSignal = [{x:sampledX, y:sampledY, type: "line", mode: 'markers'}] 
-        console.log(this.sampledSignal)
 
         //  Resampler/interpolator code
         // let newSamples = waveResampler.resample(data[0].y , samplingRate , 5000, {method: "sinc", LPF: true});
@@ -90,7 +87,7 @@ class simProcessing {
         //print the SNR value, for reasons.
         console.log(SNR);
         this.noisySignal[0].y = [...this.data[0].y]
-        var copiedY =  this.data[0].y;
+        var copiedY =  [...this.data[0].y];
         //we calculate the average of the square values of y (aka the power)
         var sum_power =0;
         for (var itr = 0; itr <copiedY.length ; itr += 1) {
@@ -105,17 +102,11 @@ class simProcessing {
         for (var itr = 0; itr <copiedY.length ; itr += 1) {
             var noiseComponent = this.getNormallyDistributedRandomNumber(0, signal_power/SNR);
             // noiseComponent.push(getNormallyDistributedRandomNumber(mean, stddev));
-            this.noisySignal[0].y[itr] += noiseComponent;
+            this.noisySignal[0].y[itr] = parseFloat(this.noisySignal[0].y[itr])+noiseComponent;
         }
         this.noisySignal[0].x = this.data[0].x
-        // plotting the noisy signal
         }
-        else {
-        //this code informs the user that the SNR value is negative, could be improved
-        console.log("your snr input must be a positive value");
-        window.alert("your snr input must be a positive value");
-        SNR=0;
-        }
+        
     }
 
     //functions for generating a gaussian distributed variable
@@ -165,24 +156,35 @@ class simProcessing {
         }
 
         addSignal(amp, freq){
-            let newSignal = {amp:amp, freq:freq}
-            let addedSignal = this.generate(amp, freq)
-            this.addedSignalNum+=1
-            if(!this.data[0].x[5]){
+            let addedSignal = []
+            if(this.data[0].y.length > 2){
+                console.log(this.data)
+                let step = this.data[0].x[1] - this.data[0].x[0]
+                let time = this.data[0].x[this.data[0].x.length -1]
+                console.log(time)
+                addedSignal = this.generate(amp, freq, time, step)
+                // console.log(addedSignal)
+                // console.log(addedSignal)
+            }
+            else{
                 this.data = this.generate(0, 0)
+                addedSignal = this.generate(amp, freq)
             }
-            this.signalList[`Signal${this.addedSignalNum}`] = newSignal;
+            this.addedSignalNum+=1
+            this.signalList[`Signal${this.addedSignalNum}`] = addedSignal;
             let y = addedSignal[0].y;
+            console.log(this.data)
+
             for(let i=0; i<y.length; i+=1){
-                this.data[0].y[i] += y[i]
+                this.data[0].y[i] = parseFloat(this.data[0].y[i]) + y[i]
             }
+            console.log(this.data)
+
         }
 
 
         deleteSignal(signalName){
-            let amp = this.signalList[signalName].amp
-            let freq = this.signalList[signalName].freq
-            let deletedSignal = this.generate(amp, freq)
+            let deletedSignal = this.signalList[signalName]
             let y = deletedSignal[0].y;
             for(let i=0; i<y.length; i+=1){
                 this.data[0].y[i] -= y[i]
@@ -190,8 +192,35 @@ class simProcessing {
             delete this.signalList[signalName];
 
         }
+
+        importSignal(parsedFile){
+            // let len = [...parsedFile].length
+            // console.log(parsedFile)
+            let x = []
+            let y = []
+            let keys = Object.keys(parsedFile[0])
+            parsedFile.forEach(function (d, i) {
+                // if (i == 0) return true; // skip the header
+                x.push(d[keys[0]])
+                y.push(d[keys[1]])
+            })
+            this.data[0].x = x
+            this.data[0].y = y
+            this.addedSignalNum+=1
+            let data = [{ x: [...x], y: [...y], mode: "lines", type: "line" }]
+            this.signalList[`Signal${this.addedSignalNum}`] = data
+
+
+        }
+    saveCSV(x, y) {  
+        let csvData = []
+        for(let i=0; i<x.length; i+=1){
+            csvData.push([x[i] ,y[i]])
+        }
+        return csvData
+
     }
 
 
-
+}
 
