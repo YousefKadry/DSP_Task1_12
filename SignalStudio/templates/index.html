@@ -18,18 +18,21 @@
 
 <body>
   <div class="page-container">
-    <p class="title">Sampling studio</p>
+      <p class="title">Sampling studio</p>
     <!-- option bar at the top -->
     <div class="opt-bar">
       <ul>
         <li>
-          <!-- <a href="#">Import Signal</a> -->
-          <input type="file" id="importSignal"  class = "save-signal-btn" >
+          <!-- import button -->
+          <label for="importSignal" class="import-btn">
+          <i class="fa fa-cloud-upload"></i> Import Signal
+          </label>
+          <input type="file" id="importSignal">
         </li>
         <li>
-          <!-- <a href="#">Import Signal</a> -->
+          <!-- Save signal button -->
           <a id ='download'>
-          <button type="button" id="saveSignal" class="save-signal-btn">Save signal</button>
+          <button type="button" id="saveSignal" class="save-signal-btn"> Save signal</button>
           </a>
         </li>
       </ul>
@@ -41,7 +44,7 @@
         <!-- Sampling rate slider -->
         <div class="optioncontainer">
           <p class="leftheader">Adjust Sampling Rate</p>
-          <input type="range" id="samplingRate" min="0" max="10" value="0" class="slider">
+          <input type="range" id="samplingRate" min="0" max="30" value="0" class="slider">
           <p>Value: <span id="SROutput"></span></p>
         </div>
 
@@ -53,7 +56,7 @@
             Enable Noise
           </label>
           <div class="add-noise-section" id="add-noise-section">
-            <label class="leftheader" for="snrValue">SNR value</label>
+            <label class="leftheader" for="snrValue">Enter SNR value</label>
             <input type="number" min="0" id="snrValue" class="form-control" />
             <button type="button" name="button" id="add-noise-btn" class="add-noise-btn">Apply noise</button>
           </div>
@@ -68,29 +71,32 @@
       </div>
       <!-- section to the right of the frame -->
       <div id="right-options" class="right-options">
-        <button type="button" name="button" id="compose" class="add-noise-btn">Compose</button>
+        <button
+          type="button" name="button" id="compose"
+          class="add-noise-btn">
+          Add Signal
+          </button>
         <form id = 'composerForm'>
           <div class="optioncontainer">
             <p class="leftheader">Adjust Amplitude</p>
-            <input type="range" id="amp" min="0" max="10" value="5" class="slider">
+            <input type="range" id="amp" min="0" max="15" value="5" class="slider">
             <p>Value: <span id="ampOutput"></span></p>
           </div>
           <!-- thid div is the Frequency slider -->
           <div class="optioncontainer">
             <p class="leftheader">Adjust Frequency</p>
-            <input type="range" id="freq" min="0" max="10" value="5" class="slider">
+            <input type="range" id="freq" min="0" max="15" value="5" class="slider">
             <p>Value: <span id="freqOutput"></span></p>
           </div>
           <div>
-            <button type="button" name="button" id="addSignalBtn" class="add-noise-btn">Add Signal</button>
+            <button type="button" name="button" id="addSignalBtn" class="add-noise-btn">Apply Component</button>
           </div>
-          <div class="optioncontainer">
-            <p class="leftheader">Remove component</p>
-            <select id="addedSignals"></select>
-          </div>
+        </form>
+        <div class="optioncontainer">
+          <p class="leftheader">Remove component</p>
+          <select id="addedSignals"></select>
           <button type="button" name="button" id="deleteBtn" class="add-noise-btn">Delete</button>
-
-      </form>
+        </div>
 
       </div>
     </div>

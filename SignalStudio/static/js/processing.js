@@ -12,7 +12,6 @@ class simProcessing {
         this.time = 5
         this.step = .001
         this.signalList = {}
-        this.imported = false
         this.layout = {
             title: "Signal displayed here",
             font: { size: 18 },
@@ -71,10 +70,6 @@ class simProcessing {
         }
 
         this.sampledSignal = [{x:sampledX, y:sampledY, type: "line", mode: 'markers'}]
-        //  Resampler/interpolator code
-        // let newSamples = waveResampler.resample(data[0].y , samplingRate , 5000, {method: "sinc", LPF: true});
-        // console.log(newSamples);
-        // let data1 = [{x:this.data[0].x, y:newSamples, type: "line", mode: 'line'}]
 
     }
 
@@ -88,16 +83,11 @@ class simProcessing {
         let interpolatedValue=0;
         for (let itrS = 0; itrS < this.sampledSignal[0].y.length; itrS+=1) {
           let intrpolationComp = Math.PI*(this.reconSignal[0].x[itr]-itrS*Ts)/Ts;
-          // console.log(intrPolationComp);
           interpolatedValue += this.sampledSignal[0].y[itrS]*(Math.sin(intrpolationComp)/intrpolationComp);
         }
-        // console.log(interpolatedValue);
         reconY.push(interpolatedValue);
       }
       this.reconSignal[0].y = reconY;
-      // console.log("The reconstructed array:");
-      // console.log(this.reconSignal[0].y);
-      // console.log(this.reconSignal[0].y.length);
     }
 //plotting the sampled and and reconstructed signal
   updateReconGraph(samplingRate){
@@ -115,7 +105,6 @@ class simProcessing {
      //check to make sure that the SNR is a positive value, if not, no noise will be added
         if(SNR>=0){
         //print the SNR value, for reasons.
-        console.log("Snr value is "+SNR);
         this.noisySignal[0].y = [...this.data[0].y]
         var copiedY =  [...this.data[0].y];
         //we calculate the average of the square values of y (aka the power)
@@ -123,7 +112,6 @@ class simProcessing {
         for (var itr = 0; itr <copiedY.length ; itr += 1) {
             var powerComponent = Math.pow(copiedY[itr],2);
             sum_power += powerComponent;
-            // console.log(this.noisySignal[0].y[itr]);
         }
         //then we get the average of the power (divide by the number of values)
         var signal_power = Math.sqrt(sum_power/copiedY.length);
@@ -186,13 +174,9 @@ class simProcessing {
         addSignal(amp, freq){
             let addedSignal = []
             if(this.data[0].y.length > 2){
-                console.log(this.data)
                 let step = this.data[0].x[1] - this.data[0].x[0]
                 let time = this.data[0].x[this.data[0].x.length -1]
-                console.log(time)
                 addedSignal = this.generate(amp, freq, time, step)
-                // console.log(addedSignal)
-                // console.log(addedSignal)
             }
             else{
                 this.data = this.generate(0, 0)
@@ -201,13 +185,9 @@ class simProcessing {
             this.addedSignalNum+=1
             this.signalList[`Signal${this.addedSignalNum}`] = addedSignal;
             let y = addedSignal[0].y;
-            // console.log(this.data)
-
             for(let i=0; i<y.length; i+=1){
                 this.data[0].y[i] = parseFloat(this.data[0].y[i]) + y[i]
             }
-            // console.log(this.data)
-
         }
 
 
@@ -222,8 +202,6 @@ class simProcessing {
         }
 
         importSignal(parsedFile){
-            // let len = [...parsedFile].length
-            // console.log(parsedFile)
             let x = []
             let y = []
             let keys = Object.keys(parsedFile[0])
@@ -237,8 +215,6 @@ class simProcessing {
             this.addedSignalNum+=1
             let data = [{ x: [...x], y: [...y], mode: "lines", type: "line" }]
             this.signalList[`Signal${this.addedSignalNum}`] = data
-
-
         }
 
     saveCSV(x, y) {
@@ -252,10 +228,3 @@ class simProcessing {
 
 
 }
-
-// def yRe(t):
-//   z = 0
-//   for i in range(-int((Ns-1)/2), int((Ns-1)/2), 1):
-//    n = int(i + (Ns-1)/2 + 1)
-//    z += ys[n]np.sin(np.pi*fs(t - i*Ts))/(np.pi*fs*(t - i*Ts))
-//   return z

@@ -1,4 +1,4 @@
-let sin_wave = new simProcessing();
+let mySignal = new simProcessing();
 // Script for reloding the data and linking elements
 var ampSlider = document.getElementById("amp");
 var ampOutput = document.getElementById("ampOutput");
@@ -27,92 +27,83 @@ Plotly.newPlot(
   [{ x: [0], y: [0] }],
   {title: "Signal displayed here",
             font: { size: 18 }},
-  sin_wave.config);
+  mySignal.config);
 Plotly.newPlot(
   "plot2",
   [{ x: [0], y: [0] }],
-  {title: "Sampled Signal",
+  {title: "Sampled + Reconstructed",
             font: { size: 18 }},
-  sin_wave.config
+  mySignal.config
 );
+//setting the original value under the sliders.
+SROutput.innerHTML = SRSLider.value + " Hz";
+ampOutput.innerHTML = ampSlider.value + " mV";
+freqOutput.innerHTML = freqSlider.value + " Hz";
 //for the sampled signal graph, plot an inital signal from the values on the sliders
-sin_wave.sampling(SRSLider.value);
+mySignal.sampling(SRSLider.value);
 
 // Function that updates the numerical value under the slider when you change the value
 SRSLider.oninput = () => {
-  SROutput.innerHTML = SRSLider.value;
+  SROutput.innerHTML = SRSLider.value + " Hz";
 };
 
 SRSLider.addEventListener("mouseup", async function () {
   let samplingRate = SRSLider.value;
   if(noiseToggle.checked){
     //recalculate the signal
-    sin_wave.sampling(samplingRate, sin_wave.noisySignal);
-    // sin_wave.animatePlot("plot2", sin_wave.sampledSignal)
-    // await sin_wave.animatePlot("plot2", sin_wave.sampledSignal);
+    mySignal.sampling(samplingRate, mySignal.noisySignal);
   } else {
     //calculating the signal
-    sin_wave.sampling(samplingRate);
-    // sin_wave.animatePlot("plot2", sin_wave.sampledSignal)
-    // await sin_wave.animatePlot("plot2", sin_wave.sampledSignal);
-    // sin_wave.animatePlot("plot2", sin_wave.reconSignal);
-    // await sin_wave.animatePlot("plot2", sin_wave.reconSignal);
+    mySignal.sampling(samplingRate);
     }
-  sin_wave.updateReconGraph(SRSLider.value);
+  //updating the sampling and reconstructed graph
+  mySignal.updateReconGraph(SRSLider.value);
 });
 
 //function that changes original signal when slider value changes
 ampSlider.oninput = async function () {
   let amp = this.value;
-  ampOutput.innerHTML = amp;
+  ampOutput.innerHTML = amp + " mV";
 
 };
 // Function that updates the sampled signal graph
 freqSlider.oninput = async function () {
   let freq = this.value;
-  freqOutput.innerHTML = freq;
+  freqOutput.innerHTML = freq + " Hz";
 
 };
 
 //function that toggles noise and shows/hides noise section
 noiseToggle.checked = false;
 const on_change = () => {
-  console.log("The checkbox was toggled");
   if (noiseToggle.checked) {
     //show noise section
     document.getElementById("add-noise-section").style.display = "block";
     if (snrValue.value) {
-      sin_wave.generateNoise(snrValue.value);
-      sin_wave.plotNoisySignal();
-      sin_wave.sampling(SRSLider.value, sin_wave.noisySignal);
-      // sin_wave.animatePlot("plot2", sin_wave.sampledSignal);
-      // sin_wave.animatePlot("plot2", sin_wave.sampledSignal);
+      mySignal.generateNoise(snrValue.value);
+      mySignal.plotNoisySignal();
+      mySignal.sampling(SRSLider.value, mySignal.noisySignal);
     }
   } else {
     //hide noise signal, remove the noisy signal and display original signal
     document.getElementById("add-noise-section").style.display = "none";
     //code that displays original signal without noise
-    console.log("noise removed");
-    Plotly.newPlot("plot1", sin_wave.data, sin_wave.layout, sin_wave.config);
-    sin_wave.sampling(SRSLider.value);
+    Plotly.newPlot("plot1", mySignal.data, mySignal.layout, mySignal.config);
+    mySignal.sampling(SRSLider.value);
   }
-  sin_wave.updateReconGraph(SRSLider.value);
+  mySignal.updateReconGraph(SRSLider.value);
 };
 
 
 //method that runs when you click the apply noise button
 addNoiseBtn.onclick =  () => {
-  //check that method works, obviously
-  console.log("Hello there");
   //get the input value from the input field and print it on the console
   SNR = snrValue.value;
   //Use the value to generate noise
-  sin_wave.generateNoise(SNR);
-  sin_wave.plotNoisySignal();
-  sin_wave.sampling(SRSLider.value, sin_wave.noisySignal);
-  // sin_wave.animatePlot("plot2", sin_wave.sampledSignal);
-  // sin_wave.animatePlot("plot2", sin_wave.sampledSignal);
-  sin_wave.updateReconGraph(SRSLider.value);
+  mySignal.generateNoise(SNR);
+  mySignal.plotNoisySignal();
+  mySignal.sampling(SRSLider.value, mySignal.noisySignal);
+  mySignal.updateReconGraph(SRSLider.value);
 };
 
 let formStatus = false;
@@ -127,24 +118,19 @@ composeBtn.onclick = () => {
   }
 }
   addSignalBtn.onclick = async() => {
-    sin_wave.addSignal(ampSlider.value, freqSlider.value);
+    mySignal.addSignal(ampSlider.value, freqSlider.value);
     if (noiseToggle.checked) {
-      sin_wave.generateNoise(snrValue.value);
-      sin_wave.animatePlot("plot1", sin_wave.noisySignal);
-      await sin_wave.animatePlot("plot1", sin_wave.noisySignal);
-      sin_wave.sampling(SRSLider.value, sin_wave.noisySignal);
-      // sin_wave.animatePlot("plot2", sin_wave.sampledSignal);
-      // sin_wave.animatePlot("plot2", sin_wave.sampledSignal);
+      mySignal.generateNoise(snrValue.value);
+      mySignal.animatePlot("plot1", mySignal.noisySignal);
+      await mySignal.animatePlot("plot1", mySignal.noisySignal);
+      mySignal.sampling(SRSLider.value, mySignal.noisySignal);
     } else {
-      sin_wave.animatePlot("plot1", sin_wave.data);
-      // console.log(sin_wave.data)
-      await sin_wave.animatePlot("plot1", sin_wave.data);
-      sin_wave.sampling(SRSLider.value);
-      // sin_wave.animatePlot("plot2", sin_wave.sampledSignal);
-      // sin_wave.animatePlot("plot2", sin_wave.sampledSignal);
+      mySignal.animatePlot("plot1", mySignal.data);
+      await mySignal.animatePlot("plot1", mySignal.data);
+      mySignal.sampling(SRSLider.value);
     }
-    sin_wave.updateReconGraph(SRSLider.value);
-    let signalNum = sin_wave.addedSignalNum
+    mySignal.updateReconGraph(SRSLider.value);
+    let signalNum = mySignal.addedSignalNum
     let option = document.createElement("option");
     option.text = `Signal${signalNum}  amp=${ampSlider.value}, freq=${freqSlider.value}`
     option.value = `Signal${signalNum}`
@@ -154,23 +140,19 @@ composeBtn.onclick = () => {
   };
 
   deleteSignalBtn.onclick = async ()=>{
-    sin_wave.deleteSignal(signalsMenue.value);
+    mySignal.deleteSignal(signalsMenue.value);
     if (noiseToggle.checked) {
-      sin_wave.generateNoise(snrValue.value);
-      sin_wave.animatePlot("plot1", sin_wave.noisySignal);
-      await sin_wave.animatePlot("plot1", sin_wave.noisySignal);
-      sin_wave.sampling(SRSLider.value, sin_wave.noisySignal);
-      // sin_wave.animatePlot("plot2", sin_wave.sampledSignal);
-      // sin_wave.animatePlot("plot2", sin_wave.sampledSignal);
+      mySignal.generateNoise(snrValue.value);
+      mySignal.animatePlot("plot1", mySignal.noisySignal);
+      await mySignal.animatePlot("plot1", mySignal.noisySignal);
+      mySignal.sampling(SRSLider.value, mySignal.noisySignal);
     } else {
-      sin_wave.animatePlot("plot1", sin_wave.data);
-      await sin_wave.animatePlot("plot1", sin_wave.data);
-      sin_wave.sampling(SRSLider.value);
-      // sin_wave.animatePlot("plot2", sin_wave.sampledSignal);
-      // sin_wave.animatePlot("plot2", sin_wave.sampledSignal);
+      mySignal.animatePlot("plot1", mySignal.data);
+      await mySignal.animatePlot("plot1", mySignal.data);
+      mySignal.sampling(SRSLider.value);
 
     }
-    sin_wave.updateReconGraph(SRSLider.value);
+    mySignal.updateReconGraph(SRSLider.value);
     signalsMenue.remove(signalsMenue.selectedIndex)
 
 
@@ -183,27 +165,26 @@ composeBtn.onclick = () => {
     reader.readAsText(file);
     reader.onload = function (event) {
         var csvData = event.target.result;
-
         let parsedCSV = d3.csvParse(csvData)
-        sin_wave.importSignal(parsedCSV)
-        let signalNum = sin_wave.addedSignalNum
+        mySignal.importSignal(parsedCSV)
+        let signalNum = mySignal.addedSignalNum
         let option = document.createElement("option");
         option.text = `Signal${signalNum}  imported Signal`
         option.value = `Signal${signalNum}`
         signalsMenue.appendChild(option);
-        sin_wave.animatePlot('plot1', sin_wave.data)
-        sin_wave.animatePlot('plot1', sin_wave.data)
-        sin_wave.sampling(SRSLider.value);
-        sin_wave.updateReconGraph(SRSLider.value);
+        mySignal.animatePlot('plot1', mySignal.data)
+        mySignal.animatePlot('plot1', mySignal.data)
+        mySignal.sampling(SRSLider.value);
+        mySignal.updateReconGraph(SRSLider.value);
       }
   }
   saveBtn.onclick = ()=>{
     let csvData = []
     if (noiseToggle.checked) {
-      csvData = sin_wave.saveCSV(sin_wave.noisySignal[0].x, sin_wave.noisySignal[0].y)
+      csvData = mySignal.saveCSV(mySignal.noisySignal[0].x, mySignal.noisySignal[0].y)
     }
     else{
-      csvData = sin_wave.saveCSV(sin_wave.data[0].x, sin_wave.data[0].y)
+      csvData = mySignal.saveCSV(mySignal.data[0].x, mySignal.data[0].y)
     }
     let csv = 'x,y\n';
     //merge the data with CSV
@@ -212,7 +193,6 @@ composeBtn.onclick = () => {
             csv += "\n";
     });
     //display the created CSV data on the web browser
-
     downloadLink.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
     //provide the name for the CSV file to be downloaded
     downloadLink.download = 'Signal.csv';
