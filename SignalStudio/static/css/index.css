@@ -53,7 +53,17 @@
     padding-top: 2%;
     text-align: right;
   }
-  .add-signal-btn, .save-signal-btn, .add-noise-btn {
+  button {
+    padding: 0.9em;
+    margin:0.5em;
+    min-width: 100px;
+    cursor: pointer;
+    border: 5px #EEE;
+    border-radius: 5px;
+    background-color: #19345D;
+    color:white;
+  }
+  #importSignal{
     padding: 0.9em;
     margin:0.5em;
     min-width: 100px;
@@ -106,6 +116,11 @@
   width:20vw;
   height: 69vh;
   background-color: #eee;
+}
+#addedSignals {
+  display: block;
+  width: 90%;
+  margin-top: 0.7rem;
 }
 .myPlot {
   width: 100%;

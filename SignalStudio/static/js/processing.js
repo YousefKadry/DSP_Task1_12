@@ -6,7 +6,8 @@ class simProcessing {
         this.amp = 0;
         this.addedSignalNum = 0
         this.noisySignal = [{ x: [0], y: [0], mode: "lines", type: "line" }];
-        this.sampledSignal = [{ x: [0], y: [0], mode: "lines", type: "line" }];
+        this.sampledSignal = [{ x: [0], y: [0], mode: "lines", type: "markers" }];
+        this.reconSignal = [{ x: [0], y: [0], mode: "lines", type: "line" }];
         this.config = { responsive: true };
         this.time = 5
         this.step = .001
@@ -15,7 +16,7 @@ class simProcessing {
         this.layout = {
             title: "Signal displayed here",
             font: { size: 18 },
-            
+
     };
     }
 
@@ -68,9 +69,8 @@ class simProcessing {
             sampledX.push(x[i])
             sampledY.push(y[i])
         }
-        
-        this.sampledSignal = [{x:sampledX, y:sampledY, type: "line", mode: 'markers'}] 
 
+        this.sampledSignal = [{x:sampledX, y:sampledY, type: "line", mode: 'markers'}]
         //  Resampler/interpolator code
         // let newSamples = waveResampler.resample(data[0].y , samplingRate , 5000, {method: "sinc", LPF: true});
         // console.log(newSamples);
@@ -78,14 +78,44 @@ class simProcessing {
 
     }
 
-
-
+//function that does sinc interpolation and fills up the reconSignal data
+  reconstructSig(samplingRate){
+      this.reconSignal[0].x = [...this.data[0].x]
+      let reconY = [];
+      let Ts=1/samplingRate;
+      //calculating the reconstructed signal using sinc interpolation
+      for (let itr=0; itr<this.data[0].x.length; itr+=1){
+        let interpolatedValue=0;
+        for (let itrS = 0; itrS < this.sampledSignal[0].y.length; itrS+=1) {
+          let intrpolationComp = Math.PI*(this.reconSignal[0].x[itr]-itrS*Ts)/Ts;
+          // console.log(intrPolationComp);
+          interpolatedValue += this.sampledSignal[0].y[itrS]*(Math.sin(intrpolationComp)/intrpolationComp);
+        }
+        // console.log(interpolatedValue);
+        reconY.push(interpolatedValue);
+      }
+      this.reconSignal[0].y = reconY;
+      // console.log("The reconstructed array:");
+      // console.log(this.reconSignal[0].y);
+      // console.log(this.reconSignal[0].y.length);
+    }
+//plotting the sampled and and reconstructed signal
+  updateReconGraph(samplingRate){
+    this.reconstructSig(samplingRate);
+    //plotting the signal
+    Plotly.newPlot(
+      "plot2",
+      [this.reconSignal[0],this.sampledSignal[0]],
+      {title: "Sampled + reconstructed signal",
+      font: { size: 18 }},
+      this.config);
+  }
 //this function generates the noisy signal and plots it
     generateNoise(SNR){
      //check to make sure that the SNR is a positive value, if not, no noise will be added
         if(SNR>=0){
         //print the SNR value, for reasons.
-        console.log(SNR);
+        console.log("Snr value is "+SNR);
         this.noisySignal[0].y = [...this.data[0].y]
         var copiedY =  [...this.data[0].y];
         //we calculate the average of the square values of y (aka the power)
@@ -106,7 +136,7 @@ class simProcessing {
         }
         this.noisySignal[0].x = this.data[0].x
         }
-        
+
     }
 
     //functions for generating a gaussian distributed variable
@@ -119,8 +149,6 @@ class simProcessing {
 
         return { z0, z1 };
     }
-
-    
     getNormallyDistributedRandomNumber(mean, stddev) {
         const { z0, _ } = this.boxMullerTransform();
 
@@ -140,7 +168,7 @@ class simProcessing {
                 layout: this.layout,
                 data: data,
                 traces: [0]
-    
+
             },
             {
                 transition: {
@@ -173,12 +201,12 @@ class simProcessing {
             this.addedSignalNum+=1
             this.signalList[`Signal${this.addedSignalNum}`] = addedSignal;
             let y = addedSignal[0].y;
-            console.log(this.data)
+            // console.log(this.data)
 
             for(let i=0; i<y.length; i+=1){
                 this.data[0].y[i] = parseFloat(this.data[0].y[i]) + y[i]
             }
-            console.log(this.data)
+            // console.log(this.data)
 
         }
 
@@ -212,7 +240,8 @@ class simProcessing {
 
 
         }
-    saveCSV(x, y) {  
+
+    saveCSV(x, y) {
         let csvData = []
         for(let i=0; i<x.length; i+=1){
             csvData.push([x[i] ,y[i]])
@@ -224,3 +253,9 @@ class simProcessing {
 
 }
 
+// def yRe(t):
+//   z = 0
+//   for i in range(-int((Ns-1)/2), int((Ns-1)/2), 1):
+//    n = int(i + (Ns-1)/2 + 1)
+//    z += ys[n]np.sin(np.pi*fs(t - i*Ts))/(np.pi*fs*(t - i*Ts))
+//   return z

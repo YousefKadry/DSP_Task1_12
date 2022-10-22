@@ -29,8 +29,8 @@
         <li>
           <!-- <a href="#">Import Signal</a> -->
           <a id ='download'>
-          <button type="button" id="saveSignal" class="save-signal-btn"> Save signal</button>
-          </a>  
+          <button type="button" id="saveSignal" class="save-signal-btn">Save signal</button>
+          </a>
         </li>
       </ul>
     </div>
@@ -44,7 +44,7 @@
           <input type="range" id="samplingRate" min="0" max="10" value="0" class="slider">
           <p>Value: <span id="SROutput"></span></p>
         </div>
-        
+
         <!-- Add noise section -->
         <div class="optioncontainer">
           <!-- Add noise checkbox -->
@@ -84,8 +84,10 @@
           <div>
             <button type="button" name="button" id="addSignalBtn" class="add-noise-btn">Add Signal</button>
           </div>
-          <select id="addedSignals">
-          </select>
+          <div class="optioncontainer">
+            <p class="leftheader">Remove component</p>
+            <select id="addedSignals"></select>
+          </div>
           <button type="button" name="button" id="deleteBtn" class="add-noise-btn">Delete</button>
 
       </form>
