@@ -1,4 +1,4 @@
-let mySignal = new simProcessing();
+let mySignal = new sigProcessing();
 // Script for reloding the data and linking elements
 var ampSlider = document.getElementById("amp");
 var ampOutput = document.getElementById("ampOutput");

@@ -1,4 +1,4 @@
-class simProcessing {
+class sigProcessing {
     constructor() {
     // Constructor
         this.data = [{ x: [], y: [], mode: "lines", type: "line" }];
@@ -92,13 +92,17 @@ class simProcessing {
 //plotting the sampled and and reconstructed signal
   updateReconGraph(samplingRate){
     this.reconstructSig(samplingRate);
+    this.reconSignal[0].name = 'Recon Signal'
+    this.sampledSignal[0].name = 'Sampled Signal'
+
     //plotting the signal
     Plotly.newPlot(
-      "plot2",
-      [this.reconSignal[0],this.sampledSignal[0]],
-      {title: "Sampled + reconstructed signal",
-      font: { size: 18 }},
-      this.config);
+        "plot2",
+        [this.reconSignal[0],this.sampledSignal[0]],
+        {title: "Sampled + reconstructed signal",
+        font: { size: 18 }},
+        this.config);
+    
   }
 //this function generates the noisy signal and plots it
     generateNoise(SNR){
