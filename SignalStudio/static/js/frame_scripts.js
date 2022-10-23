@@ -107,16 +107,16 @@ addNoiseBtn.onclick =  () => {
 };
 
 let formStatus = false;
-composeForm.style.display = "none";
-composeBtn.onclick = () => {
-  if (!formStatus) {
-    composeForm.style.display = "block";
-    formStatus = true;
-  } else {
-    composeForm.style.display = "none";
-    formStatus = false;
-  }
-}
+// composeForm.style.display = "block  ";
+// composeBtn.onclick = () => {
+//   if (!formStatus) {
+//     composeForm.style.display = "block";
+//     formStatus = true;
+//   } else {
+//     composeForm.style.display = "none";
+//     formStatus = false;
+//   }
+// }
   addSignalBtn.onclick = async() => {
     mySignal.addSignal(ampSlider.value, freqSlider.value);
     if (noiseToggle.checked) {
@@ -168,6 +168,7 @@ composeBtn.onclick = () => {
         let parsedCSV = d3.csvParse(csvData)
         mySignal.importSignal(parsedCSV)
         let signalNum = mySignal.addedSignalNum
+        signalsMenue.options.length = 0
         let option = document.createElement("option");
         option.text = `Signal${signalNum}  imported Signal`
         option.value = `Signal${signalNum}`

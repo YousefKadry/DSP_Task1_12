@@ -16,7 +16,7 @@
     /* background-color: #EEE; */
   }
   .opt-bar {
-    padding: 2% 5% 0;
+    padding: 1% 2% 0;
     min-width: 80%;
     height:10%;
     display:inline;
@@ -38,11 +38,21 @@
     text-align: center;
     margin-bottom: -3%
   }
+  .section-title {
+    min-width: 20%;
+    max-height: 1vh;
+    font-size: 1.1rem;
+    font-weight: bold;
+    display: block;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    margin-top: 0.2rem;
+  }
   .leftheader{
     min-width: 20%;
     font-size: 1rem;
     font-weight: bold;
-    padding-top: 2%;
+    padding-top: 6%;
     text-align: left;
     margin-left: 0.5rem;
   }
@@ -55,7 +65,7 @@
     border-radius: 0.5rem;
     background-color: #19345D;
     color:white;
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
   button:hover {
     background-color: #192639;
@@ -70,102 +80,104 @@
     overflow: hidden;
     clip: rect(0,0,0,0);
     border: 0;
+    font-size: 0.8rem;
   }
-.import-btn {
-  padding: 0.9em;
-  margin:0.5em;
-  cursor: pointer;
-  border: 5px #EEE;
-  border-radius: 0.5rem;
-  background-color: #19345D;
-  color:white;
-}
-.import-btn:hover{
-  background-color: #192639;
-  color:#eee;
-}
+  .import-btn {
+    padding: 0.9em;
+    margin:0.5em;
+    cursor: pointer;
+    border: 5px #EEE;
+    border-radius: 0.5rem;
+    background-color: #19345D;
+    color:white;
+    font-size: 0.9rem;
+  }
+  .import-btn:hover{
+    background-color: #192639;
+    color:#eee;
+  }
 
 
 
 /* signal frame styling */
-.mid-section {
-  height: 80vh;
-  margin-top: 1rem;
-}
-.mid-section > div {
-  display: table-cell;
-  vertical-align: top;
-}
-.left-options {
-  padding: 0.5rem;
-  border-radius: 2rem;
-  text-align: center;
-  width: 20vw;
-  height: 79vh;
-  background-color: #eee;
-}
-#snrValue{
-  width: 53%;
-  margin: auto;
-  margin-top: 0.8rem;
-  margin-bottom: 0.5rem;
-  border: none;
-  padding: 0.5rem;
-  text-align: center;
-  border-radius: 0.7rem;
-  background-color: #d3d3d3;
-  color: black;
-  font-weight: bold;
-  font-size: 1.2rem;
-  -moz-appearance: textfield;
-}
-#snrValue:hover{
-  background-color: #ababab;
-}
-#snrValue:focus{
-  outline: none;
-  border: 0.1rem solid #19345D;
-}
-.add-noise-section {
-  display: none;
-  margin-top: 0.8rem;
-}
-.signalframe {
-  min-width: 60vw;
-  max-width: 60vw;
-  height: 80vh;
-  display: flex;
-  justify-content: center;
-}
-.right-options {
-  padding: 0.5rem;
-  border-radius: 2rem;
-  text-align: center;
-  width:20vw;
-  height: 79vh;
-  background-color: #eee;
-}
-#addedSignals {
-  display: block;
-  width: 100%;
-  margin-top: 0.7rem;
-  border: none;
-  background-color: #d3d3d3;
-  color: #001330;
-  border-radius: 0.7rem;
-  text-align: center;
-  padding: 0.5rem;
-  opacity: 0.8;
-  font-weight: bold;
-}
-#addedSignals:hover {
-  opacity: 1;
-}
-.myPlot {
-  width: 100%;
-  height: 50%;
-  overflow: hidden;
-}
+  .mid-section {
+    height: 80vh;
+  }
+  .mid-section > div {
+    display: table-cell;
+    vertical-align: top;
+  }
+  .left-options {
+    padding: 0.5rem;
+    border-radius: 2rem;
+    text-align: center;
+    width: 20vw;
+    height: 79vh;
+    /* background-color: #eee; */
+  }
+  #snrValue{
+    width: 53%;
+    margin: auto;
+    margin-top: 0.8rem;
+    margin-bottom: 0.5rem;
+    border: none;
+    padding: 0.5rem;
+    text-align: center;
+    border-radius: 0.7rem;
+    background-color: #d3d3d3;
+    color: black;
+    font-weight: bold;
+    font-size: 1.2rem;
+    -moz-appearance: textfield;
+  }
+  #snrValue:hover{
+    background-color: #ababab;
+  }
+  #snrValue:focus{
+    outline: none;
+    border: 0.1rem solid #19345D;
+  }
+  .add-noise-section {
+    display: none;
+    margin-top: 0.8rem;
+  }
+
+  .signalframe {
+    min-width: 60vw;
+    max-width: 60vw;
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+  }
+  .right-options {
+    padding: 0.5rem;
+    border-radius: 2rem;
+    text-align: center;
+    width:20vw;
+    height: 79vh;
+    /* background-color: #eee; */
+  }
+  #addedSignals {
+    /* display: block; */
+    width: 100%;
+    margin-top: 1.1rem;
+    border: none;
+    background-color: #d3d3d3;
+    color: #001330;
+    border-radius: 0.5rem;
+    text-align: center;
+    padding: 0.3rem;
+    opacity: 0.8;
+    font-weight: bold;
+  }
+  #addedSignals:hover {
+    opacity: 1;
+  }
+  .myPlot {
+    width: 100%;
+    height: 50%;
+    overflow: hidden;
+  }
 
 /* Slider styling */
 input[type="range"] {
@@ -181,6 +193,9 @@ input[type="range"]:focus {
   margin-right: auto;
   margin-bottom: 0.6rem;
   margin-top: 0.6rem;
+  background-color: #eee;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.9rem;
 }
 .slider {
   margin-top: 0.7rem;

@@ -22,7 +22,7 @@ class sigProcessing {
 
     generate(amp, f, time = this.time, step = this.step) {
         const exp = "amp * Math.sin(2*pi*x*f)";
-        const pi = 22 / 7;
+        const pi = Math.PI;
         this.freq = f;
         this.amp = amp;
         this.time = time;
@@ -77,12 +77,12 @@ class sigProcessing {
   reconstructSig(samplingRate){
       this.reconSignal[0].x = [...this.data[0].x]
       let reconY = [];
-      let Ts=1/samplingRate;
+      let Fs=samplingRate;
       //calculating the reconstructed signal using sinc interpolation
       for (let itr=0; itr<this.data[0].x.length; itr+=1){
         let interpolatedValue=0;
         for (let itrS = 0; itrS < this.sampledSignal[0].y.length; itrS+=1) {
-          let intrpolationComp = Math.PI*(this.reconSignal[0].x[itr]-itrS*Ts)/Ts;
+          let intrpolationComp = Math.PI*(this.reconSignal[0].x[itr]-itrS/Fs)*Fs;
           interpolatedValue += this.sampledSignal[0].y[itrS]*(Math.sin(intrpolationComp)/intrpolationComp);
         }
         reconY.push(interpolatedValue);
@@ -92,8 +92,8 @@ class sigProcessing {
 //plotting the sampled and and reconstructed signal
   updateReconGraph(samplingRate){
     this.reconstructSig(samplingRate);
-    this.reconSignal[0].name = 'Recon Signal'
-    this.sampledSignal[0].name = 'Sampled Signal'
+    this.reconSignal[0].name = 'Reconstructed'
+    this.sampledSignal[0].name = 'Sampled'
 
     //plotting the signal
     Plotly.newPlot(
@@ -102,7 +102,7 @@ class sigProcessing {
         {title: "Sampled + reconstructed signal",
         font: { size: 18 }},
         this.config);
-    
+
   }
 //this function generates the noisy signal and plots it
     generateNoise(SNR){
@@ -140,10 +140,11 @@ class sigProcessing {
         const z1 = Math.sqrt(-2.0 * Math.log(u1)) * Math.sin(2.0 * Math.PI * u2);
 
         return { z0, z1 };
+        // return z0;
     }
     getNormallyDistributedRandomNumber(mean, stddev) {
         const { z0, _ } = this.boxMullerTransform();
-
+        // const z0 = this.boxMullerTransform();
         return z0 * stddev + mean;
     }
 
@@ -206,6 +207,7 @@ class sigProcessing {
         }
 
         importSignal(parsedFile){
+            this.signalList = [];
             let x = []
             let y = []
             let keys = Object.keys(parsedFile[0])
@@ -216,7 +218,7 @@ class sigProcessing {
             })
             this.data[0].x = x
             this.data[0].y = y
-            this.addedSignalNum+=1
+            this.addedSignalNum=1
             let data = [{ x: [...x], y: [...y], mode: "lines", type: "line" }]
             this.signalList[`Signal${this.addedSignalNum}`] = data
         }
