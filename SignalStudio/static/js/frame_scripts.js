@@ -1,45 +1,45 @@
 let mySignal = new sigProcessing();
-// Script for reloding the data and linking elements
+// Script for reloading the data and linking elements
 var ampSlider = document.getElementById("amp");
 var ampOutput = document.getElementById("ampOutput");
 var freqSlider = document.getElementById("freq");
 var freqOutput = document.getElementById("freqOutput");
 var noiseToggle = document.getElementById("noiseToggle");
-var addNoiseBtn = document.getElementById("add-noise-btn");
-var snrValue = document.getElementById("snrValue");
+var snrSlider = document.getElementById("snr");
+var snrOutput = document.getElementById("snrOutput");
 var SRSLider = document.getElementById("samplingRate");
 var SROutput = document.getElementById("SROutput");
 let composeBtn = document.getElementById("compose");
 let composeForm = document.getElementById("composerForm");
 let addSignalBtn = document.getElementById("addSignalBtn");
 let signalsMenue = document.getElementById("addedSignals");
-let deleteSignalBtn = document.getElementById('deleteBtn');
-let importBtn = document.getElementById('importSignal')
-let saveBtn = document.getElementById('saveSignal')
-let downloadLink = document.getElementById('download')
+let deleteSignalBtn = document.getElementById("deleteBtn");
+let importBtn = document.getElementById("importSignal");
+let saveBtn = document.getElementById("saveSignal");
+let downloadLink = document.getElementById("download");
 ampOutput.innerHTML = ampSlider.value;
 freqOutput.innerHTML = freqSlider.value;
 SROutput.innerHTML = SRSLider.value;
 
-//For the original signal graph, plot signal from inital value on freq/amp sliders
+//For the original signal graph, plot signal from initial value on freq/amp sliders
 Plotly.newPlot(
   "plot1",
   [{ x: [0], y: [0] }],
-  {title: "Signal displayed here",
-            font: { size: 18 }},
-  mySignal.config);
+  { font: { size: 18 } },
+  mySignal.config
+);
 Plotly.newPlot(
   "plot2",
   [{ x: [0], y: [0] }],
-  {title: "Sampled + Reconstructed",
-            font: { size: 18 }},
+  { font: { size: 18 } },
   mySignal.config
 );
 //setting the original value under the sliders.
 SROutput.innerHTML = SRSLider.value + " Hz";
 ampOutput.innerHTML = ampSlider.value + " mV";
 freqOutput.innerHTML = freqSlider.value + " Hz";
-//for the sampled signal graph, plot an inital signal from the values on the sliders
+snrOutput.innerHTML = snrSlider.value;
+//for the sampled signal graph, plot an initial signal from the values on the sliders
 mySignal.sampling(SRSLider.value);
 
 // Function that updates the numerical value under the slider when you change the value
@@ -49,13 +49,13 @@ SRSLider.oninput = () => {
 
 SRSLider.addEventListener("mouseup", async function () {
   let samplingRate = SRSLider.value;
-  if(noiseToggle.checked){
+  if (noiseToggle.checked) {
     //recalculate the signal
     mySignal.sampling(samplingRate, mySignal.noisySignal);
   } else {
     //calculating the signal
     mySignal.sampling(samplingRate);
-    }
+  }
   //updating the sampling and reconstructed graph
   mySignal.updateReconGraph(SRSLider.value);
 });
@@ -64,13 +64,15 @@ SRSLider.addEventListener("mouseup", async function () {
 ampSlider.oninput = async function () {
   let amp = this.value;
   ampOutput.innerHTML = amp + " mV";
-
 };
 // Function that updates the sampled signal graph
 freqSlider.oninput = async function () {
   let freq = this.value;
   freqOutput.innerHTML = freq + " Hz";
-
+};
+snrSlider.oninput = async function () {
+  let snr = this.value;
+  snrOutput.innerHTML = snr;
 };
 
 //function that toggles noise and shows/hides noise section
@@ -79,8 +81,8 @@ const on_change = () => {
   if (noiseToggle.checked) {
     //show noise section
     document.getElementById("add-noise-section").style.display = "block";
-    if (snrValue.value) {
-      mySignal.generateNoise(snrValue.value);
+    if (snrSlider.value) {
+      mySignal.generateNoise(snrSlider.value);
       mySignal.plotNoisySignal();
       mySignal.sampling(SRSLider.value, mySignal.noisySignal);
     }
@@ -94,11 +96,10 @@ const on_change = () => {
   mySignal.updateReconGraph(SRSLider.value);
 };
 
-
 //method that runs when you click the apply noise button
-addNoiseBtn.onclick =  () => {
+snrSlider.onclick = () => {
   //get the input value from the input field and print it on the console
-  SNR = snrValue.value;
+  SNR = snrSlider.value;
   //Use the value to generate noise
   mySignal.generateNoise(SNR);
   mySignal.plotNoisySignal();
@@ -117,84 +118,81 @@ let formStatus = false;
 //     formStatus = false;
 //   }
 // }
-  addSignalBtn.onclick = async() => {
-    mySignal.addSignal(ampSlider.value, freqSlider.value);
-    if (noiseToggle.checked) {
-      mySignal.generateNoise(snrValue.value);
-      mySignal.animatePlot("plot1", mySignal.noisySignal);
-      await mySignal.animatePlot("plot1", mySignal.noisySignal);
-      mySignal.sampling(SRSLider.value, mySignal.noisySignal);
-    } else {
-      mySignal.animatePlot("plot1", mySignal.data);
-      await mySignal.animatePlot("plot1", mySignal.data);
-      mySignal.sampling(SRSLider.value);
-    }
-    mySignal.updateReconGraph(SRSLider.value);
-    let signalNum = mySignal.addedSignalNum
+addSignalBtn.onclick = async () => {
+  mySignal.addSignal(ampSlider.value, freqSlider.value);
+  if (noiseToggle.checked) {
+    mySignal.generateNoise(snrSlider.value);
+    mySignal.animatePlot("plot1", mySignal.noisySignal);
+    await mySignal.animatePlot("plot1", mySignal.noisySignal);
+    mySignal.sampling(SRSLider.value, mySignal.noisySignal);
+  } else {
+    mySignal.animatePlot("plot1", mySignal.data);
+    await mySignal.animatePlot("plot1", mySignal.data);
+    mySignal.sampling(SRSLider.value);
+  }
+  mySignal.updateReconGraph(SRSLider.value);
+  let signalNum = mySignal.addedSignalNum;
+  let option = document.createElement("option");
+  option.text = `Signal${signalNum}  amp=${ampSlider.value}, freq=${freqSlider.value}`;
+  option.value = `Signal${signalNum}`;
+  signalsMenue.appendChild(option);
+};
+
+deleteSignalBtn.onclick = async () => {
+  mySignal.deleteSignal(signalsMenue.value);
+  if (noiseToggle.checked) {
+    mySignal.generateNoise(snrSlider.value);
+    mySignal.animatePlot("plot1", mySignal.noisySignal);
+    await mySignal.animatePlot("plot1", mySignal.noisySignal);
+    mySignal.sampling(SRSLider.value, mySignal.noisySignal);
+  } else {
+    mySignal.animatePlot("plot1", mySignal.data);
+    await mySignal.animatePlot("plot1", mySignal.data);
+    mySignal.sampling(SRSLider.value);
+  }
+  mySignal.updateReconGraph(SRSLider.value);
+  signalsMenue.remove(signalsMenue.selectedIndex);
+};
+
+importBtn.oninput = (e) => {
+  let file = e.target.files[0];
+  // let data = d3.csvParse(file);
+  var reader = new FileReader();
+  reader.readAsText(file);
+  reader.onload = function (event) {
+    var csvData = event.target.result;
+    let parsedCSV = d3.csvParse(csvData);
+    mySignal.importSignal(parsedCSV);
+    let signalNum = mySignal.addedSignalNum;
+    signalsMenue.options.length = 0;
     let option = document.createElement("option");
-    option.text = `Signal${signalNum}  amp=${ampSlider.value}, freq=${freqSlider.value}`
-    option.value = `Signal${signalNum}`
+    option.text = `Signal${signalNum}  imported Signal`;
+    option.value = `Signal${signalNum}`;
     signalsMenue.appendChild(option);
-
-
-  };
-
-  deleteSignalBtn.onclick = async ()=>{
-    mySignal.deleteSignal(signalsMenue.value);
-    if (noiseToggle.checked) {
-      mySignal.generateNoise(snrValue.value);
-      mySignal.animatePlot("plot1", mySignal.noisySignal);
-      await mySignal.animatePlot("plot1", mySignal.noisySignal);
-      mySignal.sampling(SRSLider.value, mySignal.noisySignal);
-    } else {
-      mySignal.animatePlot("plot1", mySignal.data);
-      await mySignal.animatePlot("plot1", mySignal.data);
-      mySignal.sampling(SRSLider.value);
-
-    }
+    mySignal.animatePlot("plot1", mySignal.data);
+    mySignal.animatePlot("plot1", mySignal.data);
+    mySignal.sampling(SRSLider.value);
     mySignal.updateReconGraph(SRSLider.value);
-    signalsMenue.remove(signalsMenue.selectedIndex)
-
-
+  };
+};
+saveBtn.onclick = () => {
+  let csvData = [];
+  if (noiseToggle.checked) {
+    csvData = mySignal.saveCSV(
+      mySignal.noisySignal[0].x,
+      mySignal.noisySignal[0].y
+    );
+  } else {
+    csvData = mySignal.saveCSV(mySignal.data[0].x, mySignal.data[0].y);
   }
-
-  importBtn.oninput=(e)=>{
-    let file = e.target.files[0];
-    // let data = d3.csvParse(file);
-    var reader = new FileReader();
-    reader.readAsText(file);
-    reader.onload = function (event) {
-        var csvData = event.target.result;
-        let parsedCSV = d3.csvParse(csvData)
-        mySignal.importSignal(parsedCSV)
-        let signalNum = mySignal.addedSignalNum
-        signalsMenue.options.length = 0
-        let option = document.createElement("option");
-        option.text = `Signal${signalNum}  imported Signal`
-        option.value = `Signal${signalNum}`
-        signalsMenue.appendChild(option);
-        mySignal.animatePlot('plot1', mySignal.data)
-        mySignal.animatePlot('plot1', mySignal.data)
-        mySignal.sampling(SRSLider.value);
-        mySignal.updateReconGraph(SRSLider.value);
-      }
-  }
-  saveBtn.onclick = ()=>{
-    let csvData = []
-    if (noiseToggle.checked) {
-      csvData = mySignal.saveCSV(mySignal.noisySignal[0].x, mySignal.noisySignal[0].y)
-    }
-    else{
-      csvData = mySignal.saveCSV(mySignal.data[0].x, mySignal.data[0].y)
-    }
-    let csv = 'x,y\n';
-    //merge the data with CSV
-    csvData.forEach(function(row) {
-            csv += row.join(',');
-            csv += "\n";
-    });
-    //display the created CSV data on the web browser
-    downloadLink.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
-    //provide the name for the CSV file to be downloaded
-    downloadLink.download = 'Signal.csv';
-}
+  let csv = "x,y\n";
+  //merge the data with CSV
+  csvData.forEach(function (row) {
+    csv += row.join(",");
+    csv += "\n";
+  });
+  //display the created CSV data on the web browser
+  downloadLink.href = "data:text/csv;charset=utf-8," + encodeURI(csv);
+  //provide the name for the CSV file to be downloaded
+  downloadLink.download = "Signal.csv";
+};
