@@ -21,19 +21,14 @@ ampOutput.innerHTML = ampSlider.value;
 freqOutput.innerHTML = freqSlider.value;
 SROutput.innerHTML = SRSLider.value;
 
-//For the original signal graph, plot signal from initial value on freq/amp sliders
+//intialize the graph element
 Plotly.newPlot(
   "plot1",
   [{ x: [0], y: [0] }],
   { font: { size: 18 } },
   mySignal.config
 );
-Plotly.newPlot(
-  "plot2",
-  [{ x: [0], y: [0] }],
-  { font: { size: 18 } },
-  mySignal.config
-);
+
 //setting the original value under the sliders.
 SROutput.innerHTML = SRSLider.value + " Hz";
 ampOutput.innerHTML = ampSlider.value + " mV";
@@ -57,7 +52,7 @@ SRSLider.addEventListener("mouseup", async function () {
     mySignal.sampling(samplingRate);
   }
   //updating the sampling and reconstructed graph
-  mySignal.updateReconGraph(SRSLider.value);
+  mySignal.updateGraph(SRSLider.value);
 });
 
 //function that changes original signal when slider value changes
@@ -93,7 +88,7 @@ const on_change = () => {
     Plotly.newPlot("plot1", mySignal.data, mySignal.layout, mySignal.config);
     mySignal.sampling(SRSLider.value);
   }
-  mySignal.updateReconGraph(SRSLider.value);
+  mySignal.updateGraph(SRSLider.value);
 };
 
 //method that runs when you click the apply noise button
@@ -104,10 +99,10 @@ snrSlider.onclick = () => {
   mySignal.generateNoise(SNR);
   mySignal.plotNoisySignal();
   mySignal.sampling(SRSLider.value, mySignal.noisySignal);
-  mySignal.updateReconGraph(SRSLider.value);
+  mySignal.updateGraph(SRSLider.value);
 };
 
-let formStatus = false;
+// let formStatus = false;
 // composeForm.style.display = "block  ";
 // composeBtn.onclick = () => {
 //   if (!formStatus) {
@@ -120,17 +115,20 @@ let formStatus = false;
 // }
 addSignalBtn.onclick = async () => {
   mySignal.addSignal(ampSlider.value, freqSlider.value);
-  if (noiseToggle.checked) {
+  let noiseOn = noiseToggle.checked;
+  if (noiseOn) {
     mySignal.generateNoise(snrSlider.value);
-    mySignal.animatePlot("plot1", mySignal.noisySignal);
-    await mySignal.animatePlot("plot1", mySignal.noisySignal);
+    // mySignal.animatePlot("plot1", mySignal.noisySignal);
+    // await mySignal.animatePlot("plot1", mySignal.noisySignal);
     mySignal.sampling(SRSLider.value, mySignal.noisySignal);
   } else {
     mySignal.animatePlot("plot1", mySignal.data);
     await mySignal.animatePlot("plot1", mySignal.data);
     mySignal.sampling(SRSLider.value);
   }
-  mySignal.updateReconGraph(SRSLider.value);
+  //update the graph
+  mySignal.updateGraph(SRSLider.value, noiseOn);
+
   let signalNum = mySignal.addedSignalNum;
   let option = document.createElement("option");
   option.text = `Signal${signalNum}  amp=${ampSlider.value}, freq=${freqSlider.value}`;
@@ -150,7 +148,7 @@ deleteSignalBtn.onclick = async () => {
     await mySignal.animatePlot("plot1", mySignal.data);
     mySignal.sampling(SRSLider.value);
   }
-  mySignal.updateReconGraph(SRSLider.value);
+  mySignal.updateGraph(SRSLider.value);
   signalsMenue.remove(signalsMenue.selectedIndex);
 };
 
@@ -172,7 +170,7 @@ importBtn.oninput = (e) => {
     mySignal.animatePlot("plot1", mySignal.data);
     mySignal.animatePlot("plot1", mySignal.data);
     mySignal.sampling(SRSLider.value);
-    mySignal.updateReconGraph(SRSLider.value);
+    mySignal.updateGraph(SRSLider.value);
   };
 };
 saveBtn.onclick = () => {

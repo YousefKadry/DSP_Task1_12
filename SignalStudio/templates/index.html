@@ -100,7 +100,7 @@
         <!-- this div is the signal frame -->
         <div class="signalframe">
           <div id="plot1" class="myPlot"></div>
-          <div id="plot2" class="myPlot"></div>
+          <!-- <div id="plot2" class="myPlot"></div> -->
         </div>
         <!-- section to the right of the frame -->
         <div id="right-options" class="right-options">
@@ -127,15 +127,16 @@
               onChange="on_change()"
             />
             <label class="leftheader" for="noise-toggle"> Enable Noise </label>
+            <!-- SNR slider -->
             <div class="add-noise-section" id="add-noise-section">
               <div class="optioncontainer">
-                <p class="leftheader" for="snrValue">SNR value</p>
+                <p class="leftheader" for="snrValue">Adjust SNR value</p>
                 <input
                   type="range"
                   id="snr"
                   min="1"
                   max="30"
-                  value="1"
+                  value="5"
                   class="slider"
                 />
                 <p>Value: <span id="snrOutput"></span></p>

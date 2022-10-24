@@ -13,8 +13,11 @@ class sigProcessing {
     this.step = 0.001;
     this.signalList = {};
     this.layout = {
-      title: "Signal displayed here",
-      font: { size: 18 },
+      title: "",
+      font: { size: 14 },
+      margin: {
+        b: 40,t: 40,l: 60,r: 45}
+
     };
   }
 
@@ -49,12 +52,13 @@ class sigProcessing {
     this.freq = freq;
   }
 
-  sampling(samplingRate, data = this.data) {
+  sampling(samplingRate, data=this.data) {
     let sampledX = [];
     let sampledY = [];
     let x = [...data[0].x];
     let y = [...data[0].y];
     let step = Math.floor(x.length / x[x.length - 1] / samplingRate);
+    // let step = Math.floor(x.length / samplingRate);
 
     for (let i = 0; i < x.length; i += step) {
       sampledX.push(x[i]);
@@ -86,18 +90,31 @@ class sigProcessing {
     this.reconSignal[0].y = reconY;
   }
   //plotting the sampled and and reconstructed signal
-  updateReconGraph(samplingRate) {
+  updateGraph(samplingRate, noiseOn=noiseToggle.checked) {
     this.reconstructSig(samplingRate);
     this.reconSignal[0].name = "Reconstructed";
     this.sampledSignal[0].name = "Sampled";
+    this.data[0].name="Original";
+    // check is the noise is toggled, if yes, plot the noisy data + sampled + reconstructed
+    if(noiseOn){
+      //plotting the signal
+      Plotly.newPlot(
+        "plot1",
+        [this.noisySignal[0], this.sampledSignal[0], this.reconSignal[0]],
+        this.layout,
+        this.config
+      );
+    // if not, plot the original data + sampled + reconstructed
+    }else {
+      //plotting the signal
+      Plotly.newPlot(
+        "plot1",
+        [this.data[0], this.sampledSignal[0], this.reconSignal[0]],
+        this.layout,
+        this.config
+      );
+    }
 
-    //plotting the signal
-    Plotly.newPlot(
-      "plot2",
-      [this.reconSignal[0], this.sampledSignal[0]],
-      { title: "Sampled + reconstructed signal", font: { size: 18 } },
-      this.config
-    );
   }
   //this function generates the noisy signal and plots it
   generateNoise(SNR) {
