@@ -50,23 +50,23 @@
             <input
               type="range"
               id="amp"
-              min="0"
+              min="1"
               max="15"
               value="5"
               class="slider"
             />
-            <p>Value: <span id="ampOutput"></span></p>
+            <p class="value">Value: <span id="ampOutput"></span></p>
             <!--  frequency slider stuff  -->
             <p class="leftheader">Adjust Frequency</p>
             <input
               type="range"
               id="freq"
-              min="0"
+              min="1"
               max="15"
               value="5"
               class="slider"
             />
-            <p>Value: <span id="freqOutput"></span></p>
+            <p class="value">Value: <span id="freqOutput"></span></p>
             <button
               type="button"
               name="button"
@@ -82,11 +82,10 @@
             <input
               class="noise-toggle"
               type="checkbox"
-              value="0"
               id="noiseToggle"
               onChange="on_change()"
             />
-            <label class="leftheader" for="noise-toggle"> Enable Noise </label>
+            <label class="section-title" for="noise-toggle"> Enable Noise </label>
             <!-- SNR slider -->
             <div class="add-noise-section" id="add-noise-section">
               <div class="optioncontainer">
@@ -99,7 +98,7 @@
                   value="5"
                   class="slider"
                 />
-                <p>Value: <span id="snrOutput"></span></p>
+                <p  class="value">Value: <span id="snrOutput"></span></p>
               </div>
             </div>
           </div>
@@ -114,16 +113,17 @@
         <div id="right-options" class="right-options">
           <!-- Sampling rate slider -->
           <div class="optioncontainer">
+            <p class="section-title">Sampling</p>
             <p class="leftheader">Adjust Sampling Rate</p>
             <input
               type="range"
               id="samplingRate"
               min="1"
               max="30"
-              value="15"
+              value="11"
               class="slider"
             />
-            <p>Value: <span id="SROutput"></span></p>
+            <p  class="value">Value: <span id="SROutput"></span></p>
           </div>
           <!-- remove component section -->
           <div class="optioncontainer">

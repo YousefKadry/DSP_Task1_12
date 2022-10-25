@@ -16,8 +16,8 @@ class sigProcessing {
       title: "",
       font: { size: 14 },
       margin: {
-        b: 40,t: 40,l: 60,r: 45},
-        legend: {x: 0.04, y:1.1},
+        b: 40,t: 40,l: 80,r: 45},
+        legend: {x: 0.04,xanchor:'left', y:1.1},
         xaxis:{range:[0,5], title:'Time(s)'},
         yaxis:{range:[-10,10], title:'Voltage(mV)'}
 
