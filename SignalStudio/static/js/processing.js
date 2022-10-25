@@ -16,7 +16,8 @@ class sigProcessing {
       title: "",
       font: { size: 14 },
       margin: {
-        b: 40,t: 40,l: 60,r: 45}
+        b: 40,t: 40,l: 60,r: 45},
+        legend: {x: .8, y:1.1}
 
     };
   }
@@ -57,12 +58,14 @@ class sigProcessing {
     let sampledY = [];
     let x = [...data[0].x];
     let y = [...data[0].y];
-    let step = Math.floor(x.length / x[x.length - 1] / samplingRate);
+    let step = x.length / x[x.length - 1] / samplingRate;
+    let index
     // let step = Math.floor(x.length / samplingRate);
 
     for (let i = 0; i < x.length; i += step) {
-      sampledX.push(x[i]);
-      sampledY.push(y[i]);
+      index = Math.round(i)
+      sampledX.push(x[index]);
+      sampledY.push(y[index]);
     }
 
     this.sampledSignal = [
