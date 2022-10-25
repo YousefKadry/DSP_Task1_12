@@ -6,8 +6,8 @@ class sigProcessing {
     this.amp = 0;
     this.addedSignalNum = 0;
     this.noisySignal = [{ x: [0], y: [0], mode: "lines", type: "line" }];
-    this.sampledSignal = [{ x: [0], y: [0], mode: "lines", type: "markers" }];
-    this.reconSignal = [{ x: [0], y: [0], mode: "lines", type: "line" }];
+    this.sampledSignal = [{ x: [0], y: [0], mode: "markers", marker:{size:10} }];
+    this.reconSignal = [{ x: [0], y: [0], mode: "lines", line: {dash: 'dashdot', width:3}}];
     this.config = { responsive: true };
     this.time = 5;
     this.step = 0.001;
@@ -17,7 +17,9 @@ class sigProcessing {
       font: { size: 14 },
       margin: {
         b: 40,t: 40,l: 60,r: 45},
-        legend: {x: .8, y:1.1}
+        legend: {x: 0.04, y:1.1},
+        xaxis:{range:[0,5], title:'Time(s)'},
+        yaxis:{range:[-10,10], title:'Voltage(mV)'}
 
     };
   }
@@ -69,7 +71,7 @@ class sigProcessing {
     }
 
     this.sampledSignal = [
-      { x: sampledX, y: sampledY, type: "line", mode: "markers" },
+      { x: sampledX, y: sampledY, marker:{size:6, color:'black'}, mode: "markers" },
     ];
   }
 
@@ -98,12 +100,13 @@ class sigProcessing {
     this.reconSignal[0].name = "Reconstructed";
     this.sampledSignal[0].name = "Sampled";
     this.data[0].name="Original";
+    this.noisySignal[0].name="Original";
     // check is the noise is toggled, if yes, plot the noisy data + sampled + reconstructed
     if(noiseOn){
       //plotting the signal
       Plotly.newPlot(
         "plot1",
-        [this.noisySignal[0], this.sampledSignal[0], this.reconSignal[0]],
+        [this.noisySignal[0], this.reconSignal[0], this.sampledSignal[0]],
         this.layout,
         this.config
       );
@@ -112,7 +115,7 @@ class sigProcessing {
       //plotting the signal
       Plotly.newPlot(
         "plot1",
-        [this.data[0], this.sampledSignal[0], this.reconSignal[0]],
+        [this.data[0], this.reconSignal[0], this.sampledSignal[0]],
         this.layout,
         this.config
       );

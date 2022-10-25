@@ -20,12 +20,13 @@ let downloadLink = document.getElementById("download");
 ampOutput.innerHTML = ampSlider.value;
 freqOutput.innerHTML = freqSlider.value;
 SROutput.innerHTML = SRSLider.value;
-
+let SNR = snrSlider.value
 //intialize the graph element
+
 Plotly.newPlot(
   "plot1",
   [{ x: [0], y: [0] }],
-  { font: { size: 18 } },
+  mySignal.layout,
   mySignal.config
 );
 
@@ -72,35 +73,33 @@ snrSlider.oninput = async function () {
 
 //function that toggles noise and shows/hides noise section
 noiseToggle.checked = false;
+document.getElementById("add-noise-section").style.display = "block";
 const on_change = () => {
   if (noiseToggle.checked) {
     //show noise section
-    document.getElementById("add-noise-section").style.display = "block";
-    if (snrSlider.value) {
-      mySignal.generateNoise(snrSlider.value);
-      mySignal.plotNoisySignal();
-      mySignal.sampling(SRSLider.value, mySignal.noisySignal);
-    }
+    SNR = snrSlider.value
+    mySignal.generateNoise(SNR);
+    mySignal.plotNoisySignal();
+    mySignal.sampling(SRSLider.value, mySignal.noisySignal);
+    
   } else {
-    //hide noise signal, remove the noisy signal and display original signal
-    document.getElementById("add-noise-section").style.display = "none";
     //code that displays original signal without noise
-    Plotly.newPlot("plot1", mySignal.data, mySignal.layout, mySignal.config);
     mySignal.sampling(SRSLider.value);
   }
   mySignal.updateGraph(SRSLider.value);
 };
 
 //method that runs when you click the apply noise button
-snrSlider.onclick = () => {
+snrSlider.addEventListener('mouseup',  () => {
   //get the input value from the input field and print it on the console
+  if (noiseToggle.checked){
   SNR = snrSlider.value;
   //Use the value to generate noise
   mySignal.generateNoise(SNR);
   mySignal.plotNoisySignal();
   mySignal.sampling(SRSLider.value, mySignal.noisySignal);
-  mySignal.updateGraph(SRSLider.value);
-};
+  mySignal.updateGraph(SRSLider.value);}
+});
 
 // let formStatus = false;
 // composeForm.style.display = "block  ";
@@ -117,7 +116,7 @@ addSignalBtn.onclick = async () => {
   mySignal.addSignal(ampSlider.value, freqSlider.value);
   let noiseOn = noiseToggle.checked;
   if (noiseOn) {
-    mySignal.generateNoise(snrSlider.value);
+    mySignal.generateNoise(SNR);
     // mySignal.animatePlot("plot1", mySignal.noisySignal);
     // await mySignal.animatePlot("plot1", mySignal.noisySignal);
     mySignal.sampling(SRSLider.value, mySignal.noisySignal);
@@ -139,7 +138,7 @@ addSignalBtn.onclick = async () => {
 deleteSignalBtn.onclick = async () => {
   mySignal.deleteSignal(signalsMenue.value);
   if (noiseToggle.checked) {
-    mySignal.generateNoise(snrSlider.value);
+    mySignal.generateNoise(SNR);
     mySignal.animatePlot("plot1", mySignal.noisySignal);
     await mySignal.animatePlot("plot1", mySignal.noisySignal);
     mySignal.sampling(SRSLider.value, mySignal.noisySignal);

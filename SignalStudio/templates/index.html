@@ -82,41 +82,6 @@
             </button>
           </div>
 
-          <!-- remove component section -->
-          <div class="optioncontainer">
-            <p class="section-title">Remove component</p>
-            <select id="addedSignals"></select>
-            <button
-              type="button"
-              name="button"
-              id="deleteBtn"
-              class="add-noise-btn"
-            >
-              Remove
-            </button>
-          </div>
-        </div>
-
-        <!-- this div is the signal frame -->
-        <div class="signalframe">
-          <div id="plot1" class="myPlot"></div>
-          <!-- <div id="plot2" class="myPlot"></div> -->
-        </div>
-        <!-- section to the right of the frame -->
-        <div id="right-options" class="right-options">
-          <!-- Sampling rate slider -->
-          <div class="optioncontainer">
-            <p class="leftheader">Adjust Sampling Rate</p>
-            <input
-              type="range"
-              id="samplingRate"
-              min="0"
-              max="30"
-              value="1"
-              class="slider"
-            />
-            <p>Value: <span id="SROutput"></span></p>
-          </div>
           <!-- Add noise section -->
           <div class="optioncontainer">
             <input
@@ -143,6 +108,40 @@
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- this div is the signal frame -->
+        <div class="signalframe">
+          <div id="plot1" class="myPlot"></div>
+          <!-- <div id="plot2" class="myPlot"></div> -->
+        </div>
+        <!-- section to the right of the frame -->
+        <div id="right-options" class="right-options">
+          <!-- Sampling rate slider -->
+          <div class="optioncontainer">
+            <p class="leftheader">Adjust Sampling Rate</p>
+            <input
+              type="range"
+              id="samplingRate"
+              min="1"
+              max="30"
+              value="15"
+              class="slider"
+            />
+            <p>Value: <span id="SROutput"></span></p>
+          </div>
+          <!-- remove component section -->
+          <div class="optioncontainer">
+            <p class="section-title">Remove component</p>
+            <select id="addedSignals"></select>
+            <button
+              type="button"
+              name="button"
+              id="deleteBtn"
+              class="add-noise-btn">
+              Remove
+            </button>
+          </div>  
         </div>
       </div>
     </div>
