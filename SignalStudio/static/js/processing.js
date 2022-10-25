@@ -1,13 +1,13 @@
 class sigProcessing {
   constructor() {
     // Constructor
-    this.data = [{ x: [], y: [], mode: "lines", type: "line" }];
+    this.data = [{ x: [], y: [], mode: "lines",line:{size: 5},  type: "line" }];
     this.freq = 0;
     this.amp = 0;
     this.addedSignalNum = 0;
     this.noisySignal = [{ x: [0], y: [0], mode: "lines", type: "line" }];
-    this.sampledSignal = [{ x: [0], y: [0], mode: "markers", marker:{size:10} }];
-    this.reconSignal = [{ x: [0], y: [0], mode: "lines", line: {dash: 'dashdot', width:3}}];
+    this.sampledSignal = [{ x: [0], y: [0], mode: "markers"}];
+    this.reconSignal = [{ x: [0], y: [0], mode: "lines", line: {dash: 'dashdot', width:3, color:"red"}}];
     this.config = { responsive: true };
     this.time = 5;
     this.step = 0.001;
@@ -71,7 +71,7 @@ class sigProcessing {
     }
 
     this.sampledSignal = [
-      { x: sampledX, y: sampledY, marker:{size:6, color:'black'}, mode: "markers" },
+      { x: sampledX, y: sampledY, marker:{size:8,color:'black'}, mode: "markers" },
     ];
   }
 

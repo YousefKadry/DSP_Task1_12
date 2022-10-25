@@ -1,28 +1,31 @@
 let mySignal = new sigProcessing();
-// Script for reloading the data and linking elements
+// Script for loading the data and linking elements
+// Signal mixer section
 var ampSlider = document.getElementById("amp");
 var ampOutput = document.getElementById("ampOutput");
 var freqSlider = document.getElementById("freq");
 var freqOutput = document.getElementById("freqOutput");
+let addSignalBtn = document.getElementById("addSignalBtn");
+ampOutput.innerHTML = ampSlider.value;
+freqOutput.innerHTML = freqSlider.value;
+// Noise section elements
 var noiseToggle = document.getElementById("noiseToggle");
-var snrSlider = document.getElementById("snr");
+var snrSlider = document.getElementById("snrSlider");
 var snrOutput = document.getElementById("snrOutput");
+let SNR = snrSlider.value
+// Sampling section
 var SRSLider = document.getElementById("samplingRate");
 var SROutput = document.getElementById("SROutput");
-let composeBtn = document.getElementById("compose");
-let composeForm = document.getElementById("composerForm");
-let addSignalBtn = document.getElementById("addSignalBtn");
+SROutput.innerHTML = SRSLider.value;
+// Remove comp. section
 let signalsMenue = document.getElementById("addedSignals");
 let deleteSignalBtn = document.getElementById("deleteBtn");
+// Import and save section
 let importBtn = document.getElementById("importSignal");
 let saveBtn = document.getElementById("saveSignal");
 let downloadLink = document.getElementById("download");
-ampOutput.innerHTML = ampSlider.value;
-freqOutput.innerHTML = freqSlider.value;
-SROutput.innerHTML = SRSLider.value;
-let SNR = snrSlider.value
-//intialize the graph element
 
+//intialize the graph element
 Plotly.newPlot(
   "plot1",
   [{ x: [0], y: [0] }],
@@ -71,19 +74,23 @@ snrSlider.oninput = async function () {
   snrOutput.innerHTML = snr;
 };
 
-//function that toggles noise and shows/hides noise section
+// initializing the noise section as disabled
 noiseToggle.checked = false;
-document.getElementById("add-noise-section").style.display = "block";
+document.getElementById("add-noise-section").style.opacity = 0.5;
+//Function for turning noise on/off
 const on_change = () => {
   if (noiseToggle.checked) {
     //show noise section
+    snrSlider.disabled = false; //enable the slider if the chkbox is checked
     SNR = snrSlider.value
     mySignal.generateNoise(SNR);
     mySignal.plotNoisySignal();
     mySignal.sampling(SRSLider.value, mySignal.noisySignal);
-    
+    document.getElementById("add-noise-section").style.opacity = 1;
   } else {
     //code that displays original signal without noise
+    document.getElementById("add-noise-section").style.opacity = 0.5  ;
+    snrSlider.disabled = true; //disable the slider if the box in unchecked
     mySignal.sampling(SRSLider.value);
   }
   mySignal.updateGraph(SRSLider.value);
@@ -101,28 +108,13 @@ snrSlider.addEventListener('mouseup',  () => {
   mySignal.updateGraph(SRSLider.value);}
 });
 
-// let formStatus = false;
-// composeForm.style.display = "block  ";
-// composeBtn.onclick = () => {
-//   if (!formStatus) {
-//     composeForm.style.display = "block";
-//     formStatus = true;
-//   } else {
-//     composeForm.style.display = "none";
-//     formStatus = false;
-//   }
-// }
 addSignalBtn.onclick = async () => {
   mySignal.addSignal(ampSlider.value, freqSlider.value);
   let noiseOn = noiseToggle.checked;
   if (noiseOn) {
     mySignal.generateNoise(SNR);
-    // mySignal.animatePlot("plot1", mySignal.noisySignal);
-    // await mySignal.animatePlot("plot1", mySignal.noisySignal);
     mySignal.sampling(SRSLider.value, mySignal.noisySignal);
   } else {
-    mySignal.animatePlot("plot1", mySignal.data);
-    await mySignal.animatePlot("plot1", mySignal.data);
     mySignal.sampling(SRSLider.value);
   }
   //update the graph

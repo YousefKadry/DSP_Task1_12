@@ -41,7 +41,6 @@ li {
   min-width: 20%;
   font-size: 1.1rem;
   font-weight: bold;
-  display: block;
   text-align: center;
   margin-top: 0.2rem;
 }
@@ -110,31 +109,8 @@ input[type="file"] {
   height: 79vh;
   /* background-color: #eee; */
 }
-/* #snrValue {
-  width: 53%;
-  margin: auto;
-  margin-top: 0.8rem;
-  margin-bottom: 0.5rem;
-  border: none;
-  padding: 0.5rem;
-  text-align: center;
-  border-radius: 0.7rem;
-  background-color: #d3d3d3;
-  color: black;
-  font-weight: bold;
-  font-size: 1.2rem;
-  -moz-appearance: textfield;
-}
-#snrValue:hover {
-  background-color: #ababab;
-}
-#snrValue:focus {
-  outline: none;
-  border: 0.1rem solid #19345d;
-} */
 .add-noise-section {
-  display: none;
-  margin-top: 0.8rem;
+  display: block;
 }
 .signalframe {
   min-width: 60vw;
@@ -186,7 +162,7 @@ input[type="range"]:focus {
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 0.6rem;
-  margin-top: 0.6rem;
+  /* margin-top: 0.6rem; */
   background-color: #eee;
   padding: 0.6rem 0.8rem;
   border-radius: 0.9rem;
