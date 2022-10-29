@@ -174,7 +174,7 @@ saveBtn.onclick = () => {
   } else {
     csvData = mySignal.saveCSV(mySignal.data[0].x, mySignal.data[0].y);
   }
-  let csv = "x,y\n";
+  let csv = "time,amplitude\n";
   //merge the data with CSV
   csvData.forEach(function (row) {
     csv += row.join(",");

@@ -18,12 +18,13 @@ class sigProcessing {
       margin: {
         b: 40,t: 40,l: 80,r: 45},
         legend: {x: 0.04,xanchor:'left', y:1.1},
-        xaxis:{range:[0,5], title:'Time(s)'},
+        xaxis:{range:[0,4], title:'Time(s)'},
         yaxis:{range:[-10,10], title:'Voltage(mV)'}
 
     };
   }
 
+  // Function for generating a sinusoidal component
   generate(amp, f, time = this.time, step = this.step) {
     const exp = "amp * Math.sin(2*pi*x*f)";
     const pi = Math.PI;
@@ -32,29 +33,14 @@ class sigProcessing {
     this.time = time;
     let xdata = [];
     let ydata = [];
-    for (var x = 0; x <= this.time; x += step) {
+    for (let x = 0; x <= this.time; x += step) {
       xdata.push(x);
       ydata.push(eval(exp));
     }
     const data = [{ x: xdata, y: ydata, mode: "lines", type: "line" }];
     return data;
   }
-
-  plot(amp, freq) {
-    this.data = this.generate(amp, freq);
-    Plotly.newPlot("plot1", this.data, this.layout, this.config);
-  }
-
-  change_amp(amp) {
-    this.data = this.generate(amp, this.freq);
-    this.amp = amp;
-  }
-
-  change_freq(freq) {
-    this.data = this.generate(this.amp, freq);
-    this.freq = freq;
-  }
-
+  //Function that samples the current signal and updates the sampledSignal attribute
   sampling(samplingRate, data=this.data) {
     let sampledX = [];
     let sampledY = [];
@@ -94,6 +80,7 @@ class sigProcessing {
     }
     this.reconSignal[0].y = reconY;
   }
+
   //plotting the sampled and and reconstructed signal
   updateGraph(samplingRate, noiseOn=noiseToggle.checked) {
     this.reconstructSig(samplingRate);
@@ -122,29 +109,30 @@ class sigProcessing {
     }
 
   }
+
   //this function generates the noisy signal and plots it
   generateNoise(SNR) {
     //check to make sure that the SNR is a positive value, if not, no noise will be added
     if (SNR >= 0) {
       //print the SNR value, for reasons.
       this.noisySignal[0].y = [...this.data[0].y];
-      var copiedY = [...this.data[0].y];
+      let copiedY = [...this.data[0].y];
       //we calculate the average of the square values of y (aka the power)
-      var sum_power = 0;
-      for (var itr = 0; itr < copiedY.length; itr += 1) {
-        var powerComponent = Math.pow(copiedY[itr], 2);
+      let sum_power = 0;
+      for (let itr = 0; itr < copiedY.length; itr += 1) {
+        let powerComponent = Math.pow(copiedY[itr], 2);
         sum_power += powerComponent;
       }
       //then we get the average of the power (divide by the number of values)
-      var signal_power = Math.sqrt(sum_power / copiedY.length);
+      let signal_power = Math.sqrt(sum_power / copiedY.length);
 
       //we add a random noise component based on the SNR to the signal values
-      for (var itr = 0; itr < copiedY.length; itr += 1) {
-        var noiseComponent = this.getNormallyDistributedRandomNumber(
+      for (let itr = 0; itr < copiedY.length; itr += 1) {
+        let noiseComponent = this.getNormalDistRand(
           0,
           signal_power / SNR
         );
-        // noiseComponent.push(getNormallyDistributedRandomNumber(mean, stddev));
+        // noiseComponent.push(getNormalDistRand(mean, stddev));
         this.noisySignal[0].y[itr] =
           parseFloat(this.noisySignal[0].y[itr]) + noiseComponent;
       }
@@ -152,7 +140,12 @@ class sigProcessing {
     }
   }
 
-  //functions for generating a gaussian distributed variable
+  //Function to draw the noisy signal based on the noisySignal attribute
+  plotNoisySignal() {
+    Plotly.newPlot("plot1", this.noisySignal, this.layout, this.config);
+  }
+
+  //For generating a gaussian distributed variable
   boxMullerTransform() {
     const u1 = Math.random();
     const u2 = Math.random();
@@ -163,14 +156,63 @@ class sigProcessing {
     return { z0, z1 };
     // return z0;
   }
-  getNormallyDistributedRandomNumber(mean, stddev) {
+  getNormalDistRand(mean, stddev) {
     const { z0, _ } = this.boxMullerTransform();
-    // const z0 = this.boxMullerTransform();
     return z0 * stddev + mean;
   }
 
-  plotNoisySignal() {
-    Plotly.newPlot("plot1", this.noisySignal, this.layout, this.config);
+  // Funtions that add/remove component to the signal (by generating comp then adding it to the data)
+  addSignal(amp, freq) {
+    let addedSignal = [];
+    if (this.data[0].y.length > 2) {
+      let step = this.data[0].x[1] - this.data[0].x[0];
+      let time = this.data[0].x[this.data[0].x.length - 1];
+      addedSignal = this.generate(amp, freq, time, step);
+    } else {
+      this.data = this.generate(0, 0);
+      addedSignal = this.generate(amp, freq);
+    }
+    this.addedSignalNum += 1;
+    this.signalList[`Signal${this.addedSignalNum}`] = addedSignal;
+    let y = addedSignal[0].y;
+    for (let i = 0; i < y.length; i += 1) {
+      this.data[0].y[i] = parseFloat(this.data[0].y[i]) + y[i];
+    }
+  }
+  deleteSignal(signalName) {
+    let deletedSignal = this.signalList[signalName];
+    let y = deletedSignal[0].y;
+    for (let i = 0; i < y.length; i += 1) {
+      this.data[0].y[i] -= y[i];
+    }
+    delete this.signalList[signalName];
+  }
+
+  // For importing the signal from csv file
+  importSignal(parsedFile) {
+    this.signalList = [];
+    let x = [];
+    let y = [];
+    let keys = Object.keys(parsedFile[0]);
+    parsedFile.forEach(function (d, i) {
+      // if (i == 0) return true; // skip the header
+      x.push(d[keys[0]]);
+      y.push(d[keys[1]]);
+    });
+    this.data[0].x = x;
+    this.data[0].y = y;
+    this.addedSignalNum = 1;
+    let data = [{ x: [...x], y: [...y], mode: "lines", type: "line" }];
+    this.signalList[`Signal${this.addedSignalNum}`] = data;
+  }
+
+  // For Saving the data to a csv file
+  saveCSV(x, y) {
+    let csvData = [];
+    for (let i = 0; i < x.length; i += 1) {
+      csvData.push([x[i], y[i]]);
+    }
+    return csvData;
   }
 
   async animatePlot(plotName, data) {
@@ -192,57 +234,5 @@ class sigProcessing {
       },
       this.config
     );
-  }
-
-  addSignal(amp, freq) {
-    let addedSignal = [];
-    if (this.data[0].y.length > 2) {
-      let step = this.data[0].x[1] - this.data[0].x[0];
-      let time = this.data[0].x[this.data[0].x.length - 1];
-      addedSignal = this.generate(amp, freq, time, step);
-    } else {
-      this.data = this.generate(0, 0);
-      addedSignal = this.generate(amp, freq);
-    }
-    this.addedSignalNum += 1;
-    this.signalList[`Signal${this.addedSignalNum}`] = addedSignal;
-    let y = addedSignal[0].y;
-    for (let i = 0; i < y.length; i += 1) {
-      this.data[0].y[i] = parseFloat(this.data[0].y[i]) + y[i];
-    }
-  }
-
-  deleteSignal(signalName) {
-    let deletedSignal = this.signalList[signalName];
-    let y = deletedSignal[0].y;
-    for (let i = 0; i < y.length; i += 1) {
-      this.data[0].y[i] -= y[i];
-    }
-    delete this.signalList[signalName];
-  }
-
-  importSignal(parsedFile) {
-    this.signalList = [];
-    let x = [];
-    let y = [];
-    let keys = Object.keys(parsedFile[0]);
-    parsedFile.forEach(function (d, i) {
-      // if (i == 0) return true; // skip the header
-      x.push(d[keys[0]]);
-      y.push(d[keys[1]]);
-    });
-    this.data[0].x = x;
-    this.data[0].y = y;
-    this.addedSignalNum = 1;
-    let data = [{ x: [...x], y: [...y], mode: "lines", type: "line" }];
-    this.signalList[`Signal${this.addedSignalNum}`] = data;
-  }
-
-  saveCSV(x, y) {
-    let csvData = [];
-    for (let i = 0; i < x.length; i += 1) {
-      csvData.push([x[i], y[i]]);
-    }
-    return csvData;
   }
 }
