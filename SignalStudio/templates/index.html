@@ -46,6 +46,16 @@
           <div class="optioncontainer">
             <p class="section-title">Signal Mixer</p>
             <!-- Amplitude slider section -->
+            <p class="leftheader">Adjust Frequency</p>
+            <input
+              type="range"
+              id="freq"
+              min="1"
+              max="15"
+              value="5"
+              class="slider"
+            />
+            <p class="value">Value: <span id="freqOutput"></span></p>
             <p class="leftheader">Adjust Amplitude</p>
             <input
               type="range"
@@ -57,16 +67,7 @@
             />
             <p class="value">Value: <span id="ampOutput"></span></p>
             <!--  frequency slider stuff  -->
-            <p class="leftheader">Adjust Frequency</p>
-            <input
-              type="range"
-              id="freq"
-              min="1"
-              max="15"
-              value="5"
-              class="slider"
-            />
-            <p class="value">Value: <span id="freqOutput"></span></p>
+            
             <button
               type="button"
               name="button"
