@@ -7,7 +7,7 @@ class sigProcessing {
     this.addedSignalNum = 0;
     this.noisySignal = [{ x: [0], y: [0], mode: "lines", type: "line" }];
     this.sampledSignal = [{ x: [0], y: [0], mode: "markers"}];
-    this.reconSignal = [{ x: [0], y: [0], mode: "lines", line: {dash: 'dashdot', width:3, color:"red"}}];
+    this.reconSignal = [{ x: [0], y: [0], mode: "lines", line: {dash: 'dashdot', width:3}}];
     this.config = { responsive: true };
     this.time = 5;
     this.step = 0.001;
@@ -71,7 +71,7 @@ class sigProcessing {
       let interpolatedValue = 0;
       for (let itrS = 0; itrS < this.sampledSignal[0].y.length; itrS += 1) {
         let intrpolationComp =
-          Math.PI * (this.reconSignal[0].x[itr] - itrS / Fs) * Fs;
+         Math.PI * (this.reconSignal[0].x[itr] - itrS / Fs) * Fs;
         interpolatedValue +=
           this.sampledSignal[0].y[itrS] *
           (Math.sin(intrpolationComp) / intrpolationComp);
@@ -140,10 +140,6 @@ class sigProcessing {
     }
   }
 
-  //Function to draw the noisy signal based on the noisySignal attribute
-  plotNoisySignal() {
-    Plotly.newPlot("plot1", this.noisySignal, this.layout, this.config);
-  }
 
   //For generating a gaussian distributed variable
   boxMullerTransform() {
@@ -215,24 +211,4 @@ class sigProcessing {
     return csvData;
   }
 
-  async animatePlot(plotName, data) {
-    await Plotly.animate(
-      plotName,
-      {
-        layout: this.layout,
-        data: data,
-        traces: [0],
-      },
-      {
-        transition: {
-          duration: 500,
-          easing: "cubic-in-out",
-        },
-        frame: {
-          duration: 500,
-        },
-      },
-      this.config
-    );
-  }
 }

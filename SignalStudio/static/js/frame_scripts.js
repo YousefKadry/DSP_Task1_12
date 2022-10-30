@@ -77,14 +77,13 @@ snrSlider.oninput = async function () {
 // initializing the noise section as disabled
 noiseToggle.checked = false;
 document.getElementById("add-noise-section").style.opacity = 0.5;
+snrSlider.disabled = true;
 //Function for turning noise on/off
 const on_change = () => {
   if (noiseToggle.checked) {
     //show noise section
-    snrSlider.disabled = false; //enable the slider if the chkbox is checked
-    SNR = snrSlider.value
     mySignal.generateNoise(SNR);
-    mySignal.plotNoisySignal();
+    snrSlider.disabled = false; //enable the slider if the chkbox is checked
     mySignal.sampling(SRSLider.value, mySignal.noisySignal);
     document.getElementById("add-noise-section").style.opacity = 1;
   } else {
@@ -99,17 +98,20 @@ const on_change = () => {
 //method that runs when you click the apply noise button
 snrSlider.addEventListener('mouseup',  () => {
   //get the input value from the input field and print it on the console
-  if (noiseToggle.checked){
   SNR = snrSlider.value;
   //Use the value to generate noise
   mySignal.generateNoise(SNR);
-  mySignal.plotNoisySignal();
   mySignal.sampling(SRSLider.value, mySignal.noisySignal);
-  mySignal.updateGraph(SRSLider.value);}
+  mySignal.updateGraph(SRSLider.value);
 });
 
+let sigNumber = 0;
 addSignalBtn.onclick = async () => {
   mySignal.addSignal(ampSlider.value, freqSlider.value);
+  sigNumber+=1;
+  deleteSignalBtn.disabled = false;
+  deleteSignalBtn.style.opacity = 11;
+
   let noiseOn = noiseToggle.checked;
   if (noiseOn) {
     mySignal.generateNoise(SNR);
@@ -122,25 +124,28 @@ addSignalBtn.onclick = async () => {
 
   let signalNum = mySignal.addedSignalNum;
   let option = document.createElement("option");
-  option.text = `Signal${signalNum}  amp=${ampSlider.value}, freq=${freqSlider.value}`;
+  option.text = `Signal${signalNum}  Amp=${ampSlider.value}, freq=${freqSlider.value}`;
   option.value = `Signal${signalNum}`;
   signalsMenue.appendChild(option);
 };
+deleteSignalBtn.disabled = true;
+deleteSignalBtn.style.opacity = 0.5
 
 deleteSignalBtn.onclick = async () => {
   mySignal.deleteSignal(signalsMenue.value);
   if (noiseToggle.checked) {
     mySignal.generateNoise(SNR);
-    mySignal.animatePlot("plot1", mySignal.noisySignal);
-    await mySignal.animatePlot("plot1", mySignal.noisySignal);
     mySignal.sampling(SRSLider.value, mySignal.noisySignal);
   } else {
-    mySignal.animatePlot("plot1", mySignal.data);
-    await mySignal.animatePlot("plot1", mySignal.data);
     mySignal.sampling(SRSLider.value);
   }
   mySignal.updateGraph(SRSLider.value);
   signalsMenue.remove(signalsMenue.selectedIndex);
+  sigNumber-=1
+  if(sigNumber == 0){
+    deleteSignalBtn.disabled = true;
+    deleteSignalBtn.style.opacity = 0.5
+  }
 };
 
 importBtn.oninput = (e) => {
@@ -158,10 +163,17 @@ importBtn.oninput = (e) => {
     option.text = `Signal${signalNum}  imported Signal`;
     option.value = `Signal${signalNum}`;
     signalsMenue.appendChild(option);
-    mySignal.animatePlot("plot1", mySignal.data);
-    mySignal.animatePlot("plot1", mySignal.data);
-    mySignal.sampling(SRSLider.value);
+    if(noiseToggle.checked){
+      mySignal.sampling(SRSLider.value, mySignal.noisySignal);
+      ;
+      
+    }else{
+      mySignal.sampling(SRSLider.value)
+    }
     mySignal.updateGraph(SRSLider.value);
+    deleteSignalBtn.disabled = false;
+    deleteSignalBtn.style.opacity = 1
+    sigNumber=1
   };
 };
 saveBtn.onclick = () => {
