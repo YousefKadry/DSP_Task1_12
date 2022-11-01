@@ -1,6 +1,7 @@
 # Sampling-studio
 ## Task Info
 Course: Digital Signal Processing \
+Ph.D Tamer Basha \
 for third year (first semester) \
 Contributors: \
 Name-                       Sec-        BN \
