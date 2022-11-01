@@ -3,7 +3,7 @@
 Course: Digital Signal Processing \
 for third year (first semester) \
 Contributors: \
-Name-                       sec-        BN \
+Name-                       Sec-        BN \
 1- Yousef Kadry-             2-         58 \
 2- Ahmed Mohamed Mahmoud-    1-         8 \
 3- Ahmed Abdelmonem-         1-         5 
